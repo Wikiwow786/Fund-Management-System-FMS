@@ -2,8 +2,13 @@ package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.RolePermission;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class RolePermissionModel {
 
     private Long rolePermissionId;

@@ -6,8 +6,8 @@ import com.fms.fund_management_system.exception.ResourceNotFoundException;
 import com.fms.fund_management_system.repositories.BankRepository;
 import com.fms.fund_management_system.service.BankService;
 import com.querydsl.core.BooleanBuilder;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,6 +30,7 @@ public class BankServiceImpl implements BankService {
     @Override
     public Page<Bank> getAllBanks(String bankName, String status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
+
         if(StringUtils.isNotBlank(search)){
             filter.and(QBank.bank.bankName.containsIgnoreCase(search))
                     .or(QBank.bank.status.containsIgnoreCase(search));

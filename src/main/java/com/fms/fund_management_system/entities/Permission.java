@@ -3,11 +3,14 @@ package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(schema ="fms", name="permission")
-@Data
+@Getter
+@Setter
 public class Permission {
 
     @Id

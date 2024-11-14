@@ -3,12 +3,15 @@ package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(schema ="fms", name="activity_log")
-@Data
+@Getter
+@Setter
 public class ActivityLog {
 
     @Id

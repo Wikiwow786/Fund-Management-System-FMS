@@ -2,9 +2,14 @@ package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.ActivityLog;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class ActivityLogModel {
     private Long logId;
     private Long userId;

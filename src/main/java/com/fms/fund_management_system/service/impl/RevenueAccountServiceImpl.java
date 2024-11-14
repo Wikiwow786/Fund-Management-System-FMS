@@ -1,13 +1,13 @@
 package com.fms.fund_management_system.service.impl;
 
-import com.fms.fund_management_system.entities.RevenueAccount;
 import com.fms.fund_management_system.entities.QRevenueAccount;
+import com.fms.fund_management_system.entities.RevenueAccount;
 import com.fms.fund_management_system.exception.ResourceNotFoundException;
 import com.fms.fund_management_system.repositories.RevenueAccountRepository;
 import com.fms.fund_management_system.service.RevenueAccountService;
 import com.querydsl.core.BooleanBuilder;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class RevenueAccountServiceImpl implements RevenueAccountService {
     @Override
     public Page<RevenueAccount> getAllRevenueAccounts(String revenueAccountName, String status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
-        if(StringUtils.isNotBlank(search)){
+       if(StringUtils.isNotBlank(search)){
             filter.and(QRevenueAccount.revenueAccount.accountName.containsIgnoreCase(search))
                     .or(QRevenueAccount.revenueAccount.status.containsIgnoreCase(search));
         }

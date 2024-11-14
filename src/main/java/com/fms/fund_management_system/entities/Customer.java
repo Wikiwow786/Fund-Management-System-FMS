@@ -3,12 +3,15 @@ package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
 @Entity
 @Table(schema ="fms", name="customer")
-@Data
+@Getter
+@Setter
 public class Customer {
 
     @Id

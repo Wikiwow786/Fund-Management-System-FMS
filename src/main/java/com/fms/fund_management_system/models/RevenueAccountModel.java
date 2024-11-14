@@ -6,13 +6,16 @@ import com.fms.fund_management_system.exception.ResourceNotFoundException;
 import com.fms.fund_management_system.repositories.RevenueAccountRepository;
 import com.fms.fund_management_system.util.BeanUtil;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class RevenueAccountModel {
 

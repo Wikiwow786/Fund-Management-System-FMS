@@ -7,14 +7,17 @@ import com.fms.fund_management_system.repositories.CustomerRepository;
 import com.fms.fund_management_system.repositories.UserRepository;
 import com.fms.fund_management_system.util.BeanUtil;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class CustomerModel {
 

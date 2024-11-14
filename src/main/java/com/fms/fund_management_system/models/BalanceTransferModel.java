@@ -2,12 +2,17 @@ package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.BalanceTransfer;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class BalanceTransferModel {
     private Long transferId;
     private Date transferDate;

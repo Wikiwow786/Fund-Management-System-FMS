@@ -1,9 +1,14 @@
 package com.fms.fund_management_system.models;
 import com.fms.fund_management_system.entities.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.util.ObjectUtils;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserModel {
     private Long userId;
     private String userName;

@@ -2,13 +2,18 @@ package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.Transaction;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class TransactionModel {
 
     private Long transactionId;

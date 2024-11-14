@@ -2,14 +2,18 @@ package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
 @Table(name = "fms.manual_entry", schema = "fms")
+@Getter
+@Setter
 public class ManualEntry {
 
     @Id

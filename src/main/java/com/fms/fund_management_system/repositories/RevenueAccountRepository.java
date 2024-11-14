@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface RevenueAccountRepository extends JpaRepository<RevenueAccount,Long>, QuerydslPredicateExecutor<RevenueAccount> {
     List<RevenueAccount>findAllByRevenueAccountIdIn(List<Long> revenueAccountIds);
 }

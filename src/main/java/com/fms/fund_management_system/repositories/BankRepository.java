@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface BankRepository extends JpaRepository<Bank,Long>, QuerydslPredicateExecutor<Bank> {
 
     List<Bank> findAllByBankIdIn(List<Long> bankIds);

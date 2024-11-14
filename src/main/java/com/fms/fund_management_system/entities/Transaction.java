@@ -3,6 +3,8 @@ package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -11,7 +13,8 @@ import java.util.Date;
 
 @Entity
 @Table(schema ="fms", name="transaction")
-@Data
+@Getter
+@Setter
 public class Transaction {
 
     @Id

@@ -2,13 +2,16 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(schema ="fms", name = "revenue_account")
-@Data
+@Getter
+@Setter
 public class RevenueAccount {
 
     @Id
