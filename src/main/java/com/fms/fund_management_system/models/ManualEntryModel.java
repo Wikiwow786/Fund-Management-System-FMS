@@ -1,14 +1,12 @@
 package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.ManualEntry;
-import com.fms.fund_management_system.entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Getter
