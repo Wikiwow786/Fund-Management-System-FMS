@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.configuration;
 
 import com.fms.fund_management_system.resolver.AuthPrincipalResolver;
@@ -17,3 +18,4 @@ public class WebMvcContext implements WebMvcConfigurer {
     }
 
 }
+

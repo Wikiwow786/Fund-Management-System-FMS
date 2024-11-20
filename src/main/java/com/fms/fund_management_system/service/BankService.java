@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.service;
 
 import com.fms.fund_management_system.entities.Bank;
@@ -17,3 +18,4 @@ public interface BankService {
 
     void deleteInBulk(List<Long> BankIds);
 }
+

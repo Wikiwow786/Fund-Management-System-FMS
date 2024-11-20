@@ -2,11 +2,11 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Entity
 @Table(schema ="fms", name="activity_log")
@@ -26,8 +26,8 @@ public class ActivityLog {
     @Column(name = "action")
     private String action;
 
-    @Column(name = "date_time")
-    private LocalDateTime dateTime;
+    @Column(name = "date")
+    private OffsetDateTime dateTime;
 
     @Column(name = "remarks")
     private String remarks;

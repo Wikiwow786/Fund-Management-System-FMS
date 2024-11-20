@@ -2,10 +2,9 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
@@ -14,7 +13,8 @@ import java.util.Date;
 @Table(schema ="fms", name = "balance_transfer")
 @Getter
 @Setter
-public class BalanceTransfer {
+@EqualsAndHashCode(callSuper = true)
+public class BalanceTransfer extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,5 +47,17 @@ public class BalanceTransfer {
 
     @Column(name = "remarks")
     private String remarks;
+
+    /*@Column(name = "created_at", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private User updatedBy;*/
 }
 

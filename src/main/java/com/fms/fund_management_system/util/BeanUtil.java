@@ -1,11 +1,11 @@
 package com.fms.fund_management_system.util;
 
+import com.fms.fund_management_system.listener.PropertyChangeListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 @Component
@@ -28,7 +28,7 @@ public class BeanUtil implements ApplicationContextAware {
         return applicationContext.getBean(beanName, beanClass);
     }
 
-    public static Collection<PropertyChangeListener> getListeners() {
+    public static Collection<com.fms.fund_management_system.listener.PropertyChangeListener> getListeners() {
         return applicationContext.getBeansOfType(PropertyChangeListener.class).values();
     }
 }

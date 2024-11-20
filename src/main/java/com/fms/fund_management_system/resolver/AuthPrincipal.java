@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.resolver;
 
 
@@ -12,3 +13,4 @@ public @interface AuthPrincipal
     String userId() default "userId";
     String email() default "email";
 }
+

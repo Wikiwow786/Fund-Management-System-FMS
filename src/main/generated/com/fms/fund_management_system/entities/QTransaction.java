@@ -22,17 +22,21 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public static final QTransaction transaction = new QTransaction("transaction");
 
+    public final QBaseEntity _super;
+
     public final NumberPath<java.math.BigDecimal> amount = createNumber("amount", java.math.BigDecimal.class);
 
     public final QBank bank;
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> createdAt;
 
+    // inherited
     public final QUser createdBy;
 
     public final QCustomer customer;
 
-    public final NumberPath<Long> externalId = createNumber("externalId", Long.class);
+    public final StringPath externalId = createString("externalId");
 
     public final StringPath remark = createString("remark");
 
@@ -46,8 +50,10 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public final EnumPath<Transaction.TransactionType> transactionType = createEnum("transactionType", Transaction.TransactionType.class);
 
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> updatedAt;
 
+    // inherited
     public final QUser updatedBy;
 
     public QTransaction(String variable) {
@@ -68,10 +74,13 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public QTransaction(Class<? extends Transaction> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QBaseEntity(type, metadata, inits);
         this.bank = inits.isInitialized("bank") ? new QBank(forProperty("bank"), inits.get("bank")) : null;
-        this.createdBy = inits.isInitialized("createdBy") ? new QUser(forProperty("createdBy"), inits.get("createdBy")) : null;
+        this.createdAt = _super.createdAt;
+        this.createdBy = _super.createdBy;
         this.customer = inits.isInitialized("customer") ? new QCustomer(forProperty("customer"), inits.get("customer")) : null;
-        this.updatedBy = inits.isInitialized("updatedBy") ? new QUser(forProperty("updatedBy"), inits.get("updatedBy")) : null;
+        this.updatedAt = _super.updatedAt;
+        this.updatedBy = _super.updatedBy;
     }
 
 }

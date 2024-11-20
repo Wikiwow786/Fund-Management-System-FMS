@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.service.impl;
 
 import com.fms.fund_management_system.entities.QRevenueAccount;
@@ -30,16 +31,6 @@ public class RevenueAccountServiceImpl implements RevenueAccountService {
     @Override
     public Page<RevenueAccount> getAllRevenueAccounts(String revenueAccountName, String status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
-       if(StringUtils.isNotBlank(search)){
-            filter.and(QRevenueAccount.revenueAccount.accountName.containsIgnoreCase(search))
-                    .or(QRevenueAccount.revenueAccount.status.containsIgnoreCase(search));
-        }
-        if (startDate != null) {
-            filter.or(QRevenueAccount.revenueAccount.startDate.goe(startDate));
-        }
-        if (endDate != null) {
-            filter.or(QRevenueAccount.revenueAccount.endDate.loe(endDate));
-        }
         return revenueAccountRepository.findAll(filter, pageable);
     }
 
@@ -63,3 +54,4 @@ public class RevenueAccountServiceImpl implements RevenueAccountService {
         }
     }
 }
+

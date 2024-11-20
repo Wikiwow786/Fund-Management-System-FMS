@@ -22,23 +22,27 @@ public class QCustomer extends EntityPathBase<Customer> {
 
     public static final QCustomer customer = new QCustomer("customer");
 
+    public final QBaseEntity _super;
+
     public final NumberPath<Double> balance = createNumber("balance", Double.class);
 
-    public final NumberPath<Double> commissionInPercentage = createNumber("commissionInPercentage", Double.class);
+    public final NumberPath<Double> commissionInPct = createNumber("commissionInPct", Double.class);
 
-    public final NumberPath<Double> commissionOutPercentage = createNumber("commissionOutPercentage", Double.class);
+    public final NumberPath<Double> commissionOutPct = createNumber("commissionOutPct", Double.class);
 
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> createdAt;
+
+    // inherited
     public final QUser createdBy;
 
     public final NumberPath<Long> customerId = createNumber("customerId", Long.class);
 
     public final StringPath customerName = createString("customerName");
 
-    public final DatePath<java.time.LocalDate> endDate = createDate("endDate", java.time.LocalDate.class);
+    public final NumberPath<Double> fundInFeePct = createNumber("fundInFeePct", Double.class);
 
-    public final NumberPath<Double> fundInFeePercentage = createNumber("fundInFeePercentage", Double.class);
-
-    public final NumberPath<Double> fundOutFeePercentage = createNumber("fundOutFeePercentage", Double.class);
+    public final NumberPath<Double> fundOutFeePct = createNumber("fundOutFeePct", Double.class);
 
     public final ListPath<BalanceTransfer, QBalanceTransfer> incomingTransfers = this.<BalanceTransfer, QBalanceTransfer>createList("incomingTransfers", BalanceTransfer.class, QBalanceTransfer.class, PathInits.DIRECT2);
 
@@ -46,12 +50,14 @@ public class QCustomer extends EntityPathBase<Customer> {
 
     public final StringPath remarks = createString("remarks");
 
-    public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
-
     public final StringPath status = createString("status");
 
     public final ListPath<Transaction, QTransaction> transactions = this.<Transaction, QTransaction>createList("transactions", Transaction.class, QTransaction.class, PathInits.DIRECT2);
 
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> updatedAt;
+
+    // inherited
     public final QUser updatedBy;
 
     public final QUser user;
@@ -74,8 +80,11 @@ public class QCustomer extends EntityPathBase<Customer> {
 
     public QCustomer(Class<? extends Customer> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.createdBy = inits.isInitialized("createdBy") ? new QUser(forProperty("createdBy"), inits.get("createdBy")) : null;
-        this.updatedBy = inits.isInitialized("updatedBy") ? new QUser(forProperty("updatedBy"), inits.get("updatedBy")) : null;
+        this._super = new QBaseEntity(type, metadata, inits);
+        this.createdAt = _super.createdAt;
+        this.createdBy = _super.createdBy;
+        this.updatedAt = _super.updatedAt;
+        this.updatedBy = _super.updatedBy;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
     }
 

@@ -22,21 +22,25 @@ public class QUnclaimedAmount extends EntityPathBase<UnclaimedAmount> {
 
     public static final QUnclaimedAmount unclaimedAmount = new QUnclaimedAmount("unclaimedAmount");
 
+    public final QBaseEntity _super;
+
     public final NumberPath<java.math.BigDecimal> amount = createNumber("amount", java.math.BigDecimal.class);
 
     public final QBank bank;
 
     public final QUser claimedBy;
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> createdAt;
 
+    // inherited
     public final QUser createdBy;
-
-    public final QCustomer customer;
 
     public final StringPath remark = createString("remark");
 
     public final EnumPath<UnclaimedAmount.UnclaimedAmountStatus> status = createEnum("status", UnclaimedAmount.UnclaimedAmountStatus.class);
+
+    public final QTransaction transaction;
 
     public final DateTimePath<java.util.Date> transactionDate = createDateTime("transactionDate", java.util.Date.class);
 
@@ -44,8 +48,10 @@ public class QUnclaimedAmount extends EntityPathBase<UnclaimedAmount> {
 
     public final NumberPath<Long> unclaimedId = createNumber("unclaimedId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> updatedAt;
 
+    // inherited
     public final QUser updatedBy;
 
     public final StringPath voidRemark = createString("voidRemark");
@@ -68,11 +74,14 @@ public class QUnclaimedAmount extends EntityPathBase<UnclaimedAmount> {
 
     public QUnclaimedAmount(Class<? extends UnclaimedAmount> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QBaseEntity(type, metadata, inits);
         this.bank = inits.isInitialized("bank") ? new QBank(forProperty("bank"), inits.get("bank")) : null;
         this.claimedBy = inits.isInitialized("claimedBy") ? new QUser(forProperty("claimedBy"), inits.get("claimedBy")) : null;
-        this.createdBy = inits.isInitialized("createdBy") ? new QUser(forProperty("createdBy"), inits.get("createdBy")) : null;
-        this.customer = inits.isInitialized("customer") ? new QCustomer(forProperty("customer"), inits.get("customer")) : null;
-        this.updatedBy = inits.isInitialized("updatedBy") ? new QUser(forProperty("updatedBy"), inits.get("updatedBy")) : null;
+        this.createdAt = _super.createdAt;
+        this.createdBy = _super.createdBy;
+        this.transaction = inits.isInitialized("transaction") ? new QTransaction(forProperty("transaction"), inits.get("transaction")) : null;
+        this.updatedAt = _super.updatedAt;
+        this.updatedBy = _super.updatedBy;
     }
 
 }

@@ -24,7 +24,7 @@ public class QActivityLog extends EntityPathBase<ActivityLog> {
 
     public final StringPath action = createString("action");
 
-    public final DateTimePath<java.time.LocalDateTime> dateTime = createDateTime("dateTime", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.OffsetDateTime> dateTime = createDateTime("dateTime", java.time.OffsetDateTime.class);
 
     public final NumberPath<Long> logId = createNumber("logId", Long.class);
 

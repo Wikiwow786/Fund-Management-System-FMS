@@ -1,20 +1,23 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Entity
 @Table(name = "fms.manual_entry", schema = "fms")
 @Getter
 @Setter
-public class ManualEntry {
+@EqualsAndHashCode(callSuper = true)
+public class ManualEntry extends BaseEntity{
+
+   // private volatile boolean updated = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +51,7 @@ public class ManualEntry {
     @Column(name = "remark")
     private String remark;
 
-    @ManyToOne
+  /*  @ManyToOne
     @JoinColumn(name = "created_by", foreignKey = @ForeignKey(name = "fk_manual_entry_created_by"))
     private User createdBy;
 
@@ -56,28 +59,29 @@ public class ManualEntry {
     @JoinColumn(name = "updated_by", foreignKey = @ForeignKey(name = "fk_manual_entry_updated_by"))
     private User updatedBy;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    @Column(name = "created_at", updatable = false)
+    private OffsetDateTime createdAt;*/
+
+   /* @PrePersist
+    public void onCreation() {
+        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
+    public void onUpdate() {
+        if (this.updated) {
+            this.setUpdatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+        }
+    }*/
     public enum ManualEntryType {
-        BANK_INTEREST, ADJUSTMENT, CORRECTION
+        BANK_INTEREST, EXPENSES, OTHERS
     }
 
     public enum ManualEntryStatus {
-        COMPLETED, VOIDED
+        VALID, VOIDED
     }
 }
 

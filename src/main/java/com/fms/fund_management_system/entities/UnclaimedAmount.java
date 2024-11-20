@@ -2,20 +2,23 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
 @Table(schema ="fms", name = "unclaimed_amounts")
 @Getter
 @Setter
-public class UnclaimedAmount {
+@EqualsAndHashCode(callSuper = true)
+public class UnclaimedAmount extends BaseEntity{
+
+   // private volatile boolean updated = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +42,8 @@ public class UnclaimedAmount {
     private UnclaimedAmountStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "transaction_id")
+    private Transaction transaction;
 
     @Column(name = "remark")
     private String remark;
@@ -48,33 +51,37 @@ public class UnclaimedAmount {
     @Column(name = "void_remark")
     private String voidRemark;
 
-    @ManyToOne
+   /* @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private User updatedBy;*/
 
     @ManyToOne
     @JoinColumn(name = "claimed_by")
     private User claimedBy;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+  /*  @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private OffsetDateTime updatedAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "created_at", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private OffsetDateTime createdAt;
 
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    public void onCreation() {
+        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    public void onUpdate() {
+        if (this.updated) {
+            this.setUpdatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+        }
+    }*/
 
     public enum UnclaimedAmountStatus {
         UNCLAIMED, CLAIMED, VOIDED

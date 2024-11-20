@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.service;
 
 import com.fms.fund_management_system.entities.RevenueAccount;
@@ -19,3 +20,4 @@ public interface RevenueAccountService {
 
     void deleteInBulk(List<Long> revenueAccountIds);
 }
+

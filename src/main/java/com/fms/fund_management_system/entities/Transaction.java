@@ -2,20 +2,23 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
 @Table(schema ="fms", name="transaction")
 @Getter
 @Setter
-public class Transaction {
+@EqualsAndHashCode(callSuper = true)
+public class Transaction extends BaseEntity{
+
+    //private volatile boolean updated = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,8 +53,8 @@ public class Transaction {
     private String remark;
 
     @Column(name = "external_id")
-    private Long externalId;
-
+    private String externalId;
+/*
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
@@ -60,21 +63,25 @@ public class Transaction {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private OffsetDateTime updateAt;
+
+    @Column(name = "created_at", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private OffsetDateTime createdAt;
 
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    public void onCreation() {
+        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    public void onUpdate() {
+        if (this.updated) {
+            this.setUpdateAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+        }
+    }*/
     public enum TransactionType {
         FUND_IN, FUND_OUT
     }

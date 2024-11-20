@@ -22,6 +22,8 @@ public class QBank extends EntityPathBase<Bank> {
 
     public static final QBank bank = new QBank("bank");
 
+    public final QBaseEntity _super;
+
     public final NumberPath<Double> balance = createNumber("balance", Double.class);
 
     public final NumberPath<Double> balanceLimit = createNumber("balanceLimit", Double.class);
@@ -30,15 +32,17 @@ public class QBank extends EntityPathBase<Bank> {
 
     public final StringPath bankName = createString("bankName");
 
-    public final QUser createdBy;
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> createdAt;
 
-    public final DatePath<java.time.LocalDate> endDate = createDate("endDate", java.time.LocalDate.class);
+    public final QUser createdBy;
 
     public final StringPath remarks = createString("remarks");
 
-    public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
+    public final EnumPath<Bank.BankStatus> status = createEnum("status", Bank.BankStatus.class);
 
-    public final StringPath status = createString("status");
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> updatedAt;
 
     public final QUser updatedBy;
 
@@ -60,7 +64,10 @@ public class QBank extends EntityPathBase<Bank> {
 
     public QBank(Class<? extends Bank> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QBaseEntity(type, metadata, inits);
+        this.createdAt = _super.createdAt;
         this.createdBy = inits.isInitialized("createdBy") ? new QUser(forProperty("createdBy"), inits.get("createdBy")) : null;
+        this.updatedAt = _super.updatedAt;
         this.updatedBy = inits.isInitialized("updatedBy") ? new QUser(forProperty("updatedBy"), inits.get("updatedBy")) : null;
     }
 

@@ -1,6 +1,9 @@
+
 package com.fms.fund_management_system.service;
 
 import com.fms.fund_management_system.entities.Customer;
+import com.fms.fund_management_system.models.AuthModel;
+import com.fms.fund_management_system.models.CustomerModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
@@ -12,9 +15,10 @@ public interface CustomerService {
 
     Page<Customer> getAllCustomers(String customerName, String status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable);
 
-    Customer createOrUpdate(Customer customer);
+    CustomerModel createOrUpdate(CustomerModel customerModel,Long customerId, AuthModel authModel);
 
     void delete(Long customerId);
 
     void deleteInBulk(List<Long> customerIds);
 }
+

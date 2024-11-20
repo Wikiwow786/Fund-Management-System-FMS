@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.restapi;
 
 import com.fms.fund_management_system.models.AuthModel;
@@ -10,9 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RequestMapping(value = "/customers")
@@ -38,14 +37,14 @@ public class CustomerController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerModel> save(@RequestBody CustomerModel customerModel,@AuthPrincipal AuthModel authModel) {
-        return ResponseEntity.ok(new CustomerModel(customerService.createOrUpdate(customerModel.assemble(authModel))));
+        return ResponseEntity.ok((customerService.createOrUpdate(customerModel,null,authModel)));
     }
 
     @PutMapping(value = "/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerModel> update(@PathVariable(value = "customerId") final Long customerId,
                                             @RequestBody CustomerModel customerModel,
                                             @AuthPrincipal AuthModel authModel) {
-        return ResponseEntity.ok(new CustomerModel(customerService.createOrUpdate(customerModel.assemble(customerId, authModel))));
+        return ResponseEntity.ok((customerService.createOrUpdate(customerModel,customerId,authModel)));
     }
 
     @DeleteMapping(value = "/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,3 +60,4 @@ public class CustomerController {
         return ResponseEntity.ok().build();
     }
 }
+

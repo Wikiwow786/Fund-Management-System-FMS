@@ -19,11 +19,9 @@ public class QRevenueAccount extends EntityPathBase<RevenueAccount> {
 
     public static final QRevenueAccount revenueAccount = new QRevenueAccount("revenueAccount");
 
-    public final StringPath accountName = createString("accountName");
-
     public final NumberPath<Double> balance = createNumber("balance", Double.class);
 
-    public final DatePath<java.time.LocalDate> endDate = createDate("endDate", java.time.LocalDate.class);
+    public final StringPath name = createString("name");
 
     public final StringPath remarks = createString("remarks");
 
@@ -31,7 +29,7 @@ public class QRevenueAccount extends EntityPathBase<RevenueAccount> {
 
     public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
 
-    public final StringPath status = createString("status");
+    public final EnumPath<RevenueAccount.RevenueAccountStatus> status = createEnum("status", RevenueAccount.RevenueAccountStatus.class);
 
     public QRevenueAccount(String variable) {
         super(RevenueAccount.class, forVariable(variable));

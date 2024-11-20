@@ -2,7 +2,6 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,9 +22,15 @@ public class Role {
     private String roleName;
 
     @Column(name = "status")
-    private String status;
+    private RoleStatus status;
 
     @OneToMany(mappedBy = "role")
     private List<User> users;
+
+    public enum RoleStatus{
+        ACTIVE,
+        INACTIVE
+
+    }
 }
 

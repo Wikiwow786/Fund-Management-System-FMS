@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.restapi;
 
 import com.fms.fund_management_system.models.AuthModel;
@@ -60,3 +61,4 @@ public class RevenueAccountController {
         return ResponseEntity.ok().build();
     }
 }
+

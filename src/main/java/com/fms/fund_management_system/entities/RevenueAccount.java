@@ -19,22 +19,24 @@ public class RevenueAccount {
     @Column(name = "revenue_account_id")
     private Long revenueAccountId;
 
-    @Column(name = "account_name")
-    private String accountName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "balance")
     private Double balance;
 
     @Column(name = "status")
-    private String status;
+    private RevenueAccountStatus status;
 
     @Column(name="start_date")
     private LocalDate startDate;
 
-    @Column(name="end_date")
-    private LocalDate endDate;
-
     @Column(name = "remarks")
     private String remarks;
+
+    public enum RevenueAccountStatus{
+        ACTIVE,
+        INACTIVE
+    }
 }
 

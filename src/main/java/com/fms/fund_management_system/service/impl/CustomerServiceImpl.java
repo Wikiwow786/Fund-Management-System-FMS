@@ -1,10 +1,17 @@
+
 package com.fms.fund_management_system.service.impl;
 
 import com.fms.fund_management_system.entities.Customer;
 import com.fms.fund_management_system.entities.QCustomer;
+import com.fms.fund_management_system.entities.User;
 import com.fms.fund_management_system.exception.ResourceNotFoundException;
+import com.fms.fund_management_system.mapper.CustomerMapper;
+import com.fms.fund_management_system.models.AuthModel;
+import com.fms.fund_management_system.models.CustomerModel;
 import com.fms.fund_management_system.repositories.CustomerRepository;
+import com.fms.fund_management_system.repositories.UserRepository;
 import com.fms.fund_management_system.service.CustomerService;
+import com.fms.fund_management_system.util.BeanUtil;
 import com.querydsl.core.BooleanBuilder;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +27,8 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
+    private final UserRepository userRepository;
     @Override
     public Customer getCustomer(Long customerId) {
         return customerRepository.findById(customerId)
@@ -33,20 +42,14 @@ public class CustomerServiceImpl implements CustomerService {
             filter.and(QCustomer.customer.customerName.containsIgnoreCase(search))
                     .or(QCustomer.customer.customerName.containsIgnoreCase(search));
         }
-        if (startDate != null) {
-            filter.or(QCustomer.customer.startDate.goe(startDate));
-        }
-
-        if (endDate != null) {
-            filter.or(QCustomer.customer.endDate.loe(endDate));
-        }
         return customerRepository.findAll(filter, pageable);
     }
 
 
     @Override
-    public Customer createOrUpdate(Customer customer) {
-        return customerRepository.save(customer);
+    public CustomerModel createOrUpdate(CustomerModel customerModel,Long customerId,AuthModel authModel) {
+        return new CustomerModel(customerRepository.save(assemble(customerModel,customerId,authModel)));
+
     }
 
     @Override
@@ -65,4 +68,28 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.delete(customer);
         }
     }
+
+    public Customer assemble(CustomerModel customerModel,Long customerId,AuthModel authModel){
+
+        Customer customer;
+
+        User user = BeanUtil.getBean(UserRepository.class).findById(authModel.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+        if (null != customerId) {
+            customer = BeanUtil.getBean(CustomerRepository.class).findById(customerId)
+                    .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            customer.setUpdatedBy(user);
+        }
+        else {
+            customer = new Customer();
+            customer.setCreatedBy(user);
+        }
+        customerMapper.toEntity(customerModel, customer);
+        if(null != customerModel.getMiddleManId()){
+            customer.setUser(userRepository.findById(customerModel.getMiddleManId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+        }
+        return customer;
+    }
 }
+

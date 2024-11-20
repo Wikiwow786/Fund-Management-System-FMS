@@ -24,7 +24,7 @@ public class QRole extends EntityPathBase<Role> {
 
     public final StringPath roleName = createString("roleName");
 
-    public final StringPath status = createString("status");
+    public final EnumPath<Role.RoleStatus> status = createEnum("status", Role.RoleStatus.class);
 
     public final ListPath<User, QUser> users = this.<User, QUser>createList("users", User.class, QUser.class, PathInits.DIRECT2);
 

@@ -2,17 +2,22 @@
 package com.fms.fund_management_system.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 @Entity
 @Table(schema ="fms", name="customer")
 @Getter
 @Setter
-public class Customer {
+@EqualsAndHashCode(callSuper = true)
+public class Customer extends BaseEntity{
+
+   // private volatile boolean updated = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,22 +34,22 @@ public class Customer {
     private String status;
 
     @Column(name = "fund_in_fee_percentage")
-    private Double fundInFeePercentage;
+    private Double fundInFeePct;
 
     @Column(name = "fund_out_fee_percentage")
-    private Double fundOutFeePercentage;
+    private Double fundOutFeePct;
 
     @Column(name = "commission_in_percentage")
-    private Double commissionInPercentage;
+    private Double commissionInPct;
 
     @Column(name = "commission_out_percentage")
-    private Double commissionOutPercentage;
+    private Double commissionOutPct;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
+ /*   @Column(name = "updated_at")
+    private OffsetDateTime updateAt;
 
-    @Column(name = "end_date")
-    private LocalDate endDate;
+    @Column(name = "created_at", updatable = false)
+    private OffsetDateTime createdAt;*/
 
     @Column(name = "remarks")
     private String remarks;
@@ -62,12 +67,25 @@ public class Customer {
     @OneToMany(mappedBy = "targetCustomer")
     private List<BalanceTransfer> incomingTransfers;
 
-    @ManyToOne
+   /* @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    private User updatedBy;*/
+
+
+  /*  @PrePersist
+    public void onCreation() {
+        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        if (this.updated) {
+            this.setUpdateAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+        }
+    }*/
 }
 

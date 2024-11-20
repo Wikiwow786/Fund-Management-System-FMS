@@ -1,21 +1,20 @@
+CREATE TYPE status_enum AS ENUM ('ACTIVE', 'INACTIVE');
 CREATE TABLE fms.bank (
     bank_id SERIAL PRIMARY KEY,
     bank_name VARCHAR(100) NOT NULL,
     balance NUMERIC(15, 2) DEFAULT 0.00,
     balance_limit DECIMAL(18, 2),
-    status VARCHAR(50) NOT NULL,
-    start_date DATE,
-    end_date DATE,
+    status status_enum NOT NULL DEFAULT 'ACTIVE',
     remarks TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 INDEXES FOR Bank:
 CREATE INDEX idx_bank_name on fms.bank(bank_name);
 CREATE INDEX idx_status on fms.bank(status);
-CREATE INDEX idx_start_date on fms.bank(start_date);
-CREATE INDEX idx_end_date on fms.bank(end_date);
+CREATE INDEX idx_created_at on fms.bank(created_at);
+CREATE INDEX idx_updated_at on fms.bank(updated_at);
 
 CREATE TABLE fms.customer (
     customer_id SERIAL PRIMARY KEY,
@@ -27,12 +26,10 @@ CREATE TABLE fms.customer (
     commission_in_percentage DECIMAL(5, 2),
     commission_out_percentage DECIMAL(5, 2),
     middleman_id BIGINT,
-    start_date DATE,
-    end_date DATE,
     remarks TEXT,
-    status varchar NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    status status_enum NOT NULL DEFAULT 'ACTIVE',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 INDEXES FOR CUSTOMER:
@@ -54,8 +51,8 @@ CREATE TABLE fms.transaction (
     external_id bigint,
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
     updated_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 INDEXES FOR TRANSACTION:
@@ -72,12 +69,11 @@ CREATE TABLE fms.manual_entry (
     manual_entry_id SERIAL PRIMARY KEY,
     bank_id INT REFERENCES fms.bank(bank_id) ON DELETE CASCADE,
     transaction_id INT REFERENCES fms.transaction(transaction_id) ON DELETE CASCADE,
-    customer_id INT REFERENCES fms.customer(customer_id) ON DELETE SET NULL,
     entry_date DATE NOT NULL,
     entry_time TIME NOT NULL,
     amount NUMERIC(15, 2) NOT NULL,
-    entry_type VARCHAR(50) NOT NULL CHECK (entry_type IN ('Bank Interest', 'Adjustment', 'Correction')),
-    status VARCHAR(50) NOT NULL CHECK (status IN ('COMPLETED', 'VOIDED')),
+    entry_type VARCHAR(50) NOT NULL CHECK (entry_type IN ('bank_interest', 'expense', 'others')),
+    status VARCHAR(50) NOT NULL CHECK (status IN ('VALID', 'VOIDED')),
     remark TEXT,
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
     updated_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
@@ -96,20 +92,20 @@ CREATE INDEX idx_manual_entry_created_by on fms.manual_entry(created_by);
 CREATE TABLE fms.unclaimed_amount (
     unclaimed_id SERIAL PRIMARY KEY,
     bank_id INT REFERENCES fms.bank(bank_id) ON DELETE CASCADE,
-transaction_id INT REFERENCES fms.transaction(transaction_id) ON DELETE CASCADE,
+    claim_as_transaction_id INT REFERENCES fms.transaction(transaction_id) ON DELETE CASCADE,
     amount NUMERIC(15, 2) NOT NULL,
     transaction_date DATE NOT NULL,
     transaction_time TIME NOT NULL,
     status VARCHAR(50) NOT NULL CHECK (status IN ('UNCLAIMED', 'CLAIMED', 'VOIDED')),
-    customer_id INT REFERENCES fms.customer(customer_id) ON DELETE SET NULL,
     remark TEXT,
     void_remark TEXT,
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
     updated_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
     claimed_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+
 
 INDEXES FOR UnclaimedAmount:
 CREATE INDEX idx_unclaimed_amount_bank_id on fms.unclaimed_amount(bank_id);
@@ -128,7 +124,10 @@ CREATE TABLE fms.balance_transfer (
     target_customer_id BIGINT REFERENCES fms.customer ON DELETE CASCADE,
     source_bank_id BIGINT REFERENCES fms.bank ON DELETE CASCADE,
     target_bank_id BIGINT REFERENCES fms.bank ON DELETE CASCADE,
-    remarks TEXT
+    remarks TEXT,
+    created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 INDEXES FOR Balance Transfer Table:
@@ -149,11 +148,10 @@ CREATE TABLE fms.balance_transfer_transaction(
 -- Revenue Account Table
 CREATE TABLE fms.revenue_account (
     revenue_account_id BIGINT NOT NULL CONSTRAINT pk_revenue_account PRIMARY KEY,
-    account_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     balance DECIMAL(18, 2) DEFAULT 0,
-    status VARCHAR(50) NOT NULL,
+    status status_enum NOT NULL DEFAULT 'ACTIVE',
     start_date DATE,
-    end_date DATE,
     remarks TEXT
 );
 
@@ -166,14 +164,18 @@ CREATE INDEX idx_revenue_account_end_date on fms.revenue_account(end_date);
 -- User Table
 CREATE TABLE fms.user (
     user_id BIGINT NOT NULL CONSTRAINT pk_user PRIMARY KEY,
-    user_name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role_id BIGINT REFERENCES fms.role ON DELETE SET NULL,
-    status VARCHAR(50) NOT NULL
+    status status_enum NOT NULL DEFAULT 'ACTIVE',
+    created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
+    updated_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 INDEXES FOR User Table:
-CREATE INDEX idx_user_name on fms.user(user_name);
+CREATE INDEX idx_name on fms.user(user_name);
 CREATE INDEX idx_role_id on fms.user(role_id);
 
 
@@ -181,7 +183,7 @@ CREATE INDEX idx_role_id on fms.user(role_id);
 CREATE  TABLE fms.role (
     role_id BIGINT NOT NULL CONSTRAINT pk_role PRIMARY KEY,
     role_name VARCHAR(50) UNIQUE NOT NULL,
-    status VARCHAR(50) NOT NULL
+    status status_enum NOT NULL DEFAULT 'ACTIVE'
 );
 
 INDEXES FOR Role Table:

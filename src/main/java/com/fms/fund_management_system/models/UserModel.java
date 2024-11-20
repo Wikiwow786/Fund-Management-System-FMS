@@ -1,6 +1,5 @@
 package com.fms.fund_management_system.models;
 import com.fms.fund_management_system.entities.User;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,7 @@ import org.springframework.util.ObjectUtils;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserModel {
+public class UserModel extends BaseModel{
     private Long userId;
     private String userName;
     private String email;
@@ -17,6 +16,7 @@ public class UserModel {
     private String status;
 
     public UserModel(User user){
+        super(user);
         this.userId = user.getUserId();
         this.userName = user.getUserName();
         this.email = user.getEmail();

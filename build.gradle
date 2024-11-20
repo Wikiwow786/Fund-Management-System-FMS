@@ -36,6 +36,13 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    implementation 'joda-time:joda-time:2.12.5'
+
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+
     // Testing Dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -47,6 +54,8 @@ sourceSets {
         }
     }
 }
+
+
 
 tasks.register("generateQueryDSL", JavaCompile) {
     source = sourceSets.main.java

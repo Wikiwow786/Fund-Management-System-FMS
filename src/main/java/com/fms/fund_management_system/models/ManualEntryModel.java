@@ -1,20 +1,20 @@
 package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.ManualEntry;
-import lombok.Data;
+import com.fms.fund_management_system.entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class ManualEntryModel {
+public class ManualEntryModel extends BaseModel{
 
     private Long manualEntryId;
     private Long bankId;
@@ -25,13 +25,9 @@ public class ManualEntryModel {
     private ManualEntry.ManualEntryType entryType;
     private ManualEntry.ManualEntryStatus status;
     private String remark;
-    private Long createdBy;
-    private Long updatedBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
-    // Constructor that takes a ManualEntry entity and initializes the model
     public ManualEntryModel(ManualEntry manualEntry) {
+        super(manualEntry);
         this.manualEntryId = manualEntry.getManualEntryId();
         this.bankId = manualEntry.getBank() != null ? manualEntry.getBank().getBankId() : null;
         this.customerId = manualEntry.getCustomer() != null ? manualEntry.getCustomer().getCustomerId() : null;
@@ -41,10 +37,6 @@ public class ManualEntryModel {
         this.entryType = manualEntry.getEntryType();
         this.status = manualEntry.getStatus();
         this.remark = manualEntry.getRemark();
-        this.createdBy = manualEntry.getCreatedBy() != null ? manualEntry.getCreatedBy().getUserId() : null;
-        this.updatedBy = manualEntry.getUpdatedBy() != null ? manualEntry.getUpdatedBy().getUserId() : null;
-        this.createdAt = manualEntry.getCreatedAt();
-        this.updatedAt = manualEntry.getUpdatedAt();
     }
 
 }

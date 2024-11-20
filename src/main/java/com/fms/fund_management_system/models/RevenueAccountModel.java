@@ -5,7 +5,6 @@ import com.fms.fund_management_system.entities.RevenueAccount;
 import com.fms.fund_management_system.exception.ResourceNotFoundException;
 import com.fms.fund_management_system.repositories.RevenueAccountRepository;
 import com.fms.fund_management_system.util.BeanUtil;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,19 +19,18 @@ import java.time.LocalDate;
 public class RevenueAccountModel {
 
     private Long revenueAccountId;
-    private String accountName;
+    private String name;
     private Double balance;
-    private String status;
+    private RevenueAccount.RevenueAccountStatus status;
 
     @JsonFormat( shape = JsonFormat.Shape.STRING,
             pattern = "dd-MM-yyyy")
     private LocalDate startDate;
-    private LocalDate endDate;
     private String remarks;
 
     public RevenueAccountModel(RevenueAccount revenueAccount) {
         this.revenueAccountId = revenueAccount.getRevenueAccountId();
-        this.accountName = revenueAccount.getAccountName();
+        this.name = revenueAccount.getName();
         this.balance = revenueAccount.getBalance();
         this.status = revenueAccount.getStatus();
         this.startDate = revenueAccount.getStartDate();

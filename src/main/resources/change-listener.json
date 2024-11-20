@@ -1,0 +1,19 @@
+{
+  "listener": [
+    {
+      "entityClass": "com.fms.fund_management_system.entities.Bank",
+      "fields": [
+        {
+          "listener": "com.fms.fund_management_system.listener.ChangeAuditListener",
+          "changedOnly": false,
+          "property": "BankModel",
+          "symbolicText": "bank has been created",
+          "lookup": "",
+          "eventCode": "100",
+          "type": "300",
+          "finalisationPoint": "PRE_COMMIT"
+        }
+      ]
+    }
+  ]
+}

@@ -22,17 +22,21 @@ public class QManualEntry extends EntityPathBase<ManualEntry> {
 
     public static final QManualEntry manualEntry = new QManualEntry("manualEntry");
 
+    public final QBaseEntity _super;
+
     public final NumberPath<java.math.BigDecimal> amount = createNumber("amount", java.math.BigDecimal.class);
 
     public final QBank bank;
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> createdAt;
 
+    // inherited
     public final QUser createdBy;
 
     public final QCustomer customer;
 
-    public final DatePath<java.sql.Date> entryDate = createDate("entryDate", java.sql.Date.class);
+    public final DateTimePath<java.util.Date> entryDate = createDateTime("entryDate", java.util.Date.class);
 
     public final TimePath<java.sql.Time> entryTime = createTime("entryTime", java.sql.Time.class);
 
@@ -44,8 +48,10 @@ public class QManualEntry extends EntityPathBase<ManualEntry> {
 
     public final EnumPath<ManualEntry.ManualEntryStatus> status = createEnum("status", ManualEntry.ManualEntryStatus.class);
 
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.OffsetDateTime> updatedAt;
 
+    // inherited
     public final QUser updatedBy;
 
     public QManualEntry(String variable) {
@@ -66,10 +72,13 @@ public class QManualEntry extends EntityPathBase<ManualEntry> {
 
     public QManualEntry(Class<? extends ManualEntry> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QBaseEntity(type, metadata, inits);
         this.bank = inits.isInitialized("bank") ? new QBank(forProperty("bank"), inits.get("bank")) : null;
-        this.createdBy = inits.isInitialized("createdBy") ? new QUser(forProperty("createdBy"), inits.get("createdBy")) : null;
+        this.createdAt = _super.createdAt;
+        this.createdBy = _super.createdBy;
         this.customer = inits.isInitialized("customer") ? new QCustomer(forProperty("customer"), inits.get("customer")) : null;
-        this.updatedBy = inits.isInitialized("updatedBy") ? new QUser(forProperty("updatedBy"), inits.get("updatedBy")) : null;
+        this.updatedAt = _super.updatedAt;
+        this.updatedBy = _super.updatedBy;
     }
 
 }

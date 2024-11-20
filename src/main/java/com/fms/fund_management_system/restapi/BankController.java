@@ -1,3 +1,4 @@
+
 package com.fms.fund_management_system.restapi;
 
 import com.fms.fund_management_system.models.AuthModel;
@@ -61,4 +62,5 @@ public class BankController {
         return ResponseEntity.ok().build();
     }
 }
+
 
