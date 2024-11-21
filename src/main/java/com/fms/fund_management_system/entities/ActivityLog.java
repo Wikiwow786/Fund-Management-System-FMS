@@ -4,9 +4,7 @@ package com.fms.fund_management_system.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.OffsetDateTime;
-import java.util.Date;
 
 @Entity
 @Table(schema ="fms", name="activity_log")

@@ -16,7 +16,7 @@ public class ManualEntryModel extends BaseModel{
 
     private Long manualEntryId;
     private Long bankId;
-    private Long customerId;
+    private Long transactionId;
     private Date entryDate;
     private Time entryTime;
     private BigDecimal amount;
@@ -28,7 +28,6 @@ public class ManualEntryModel extends BaseModel{
         super(manualEntry);
         this.manualEntryId = manualEntry.getManualEntryId();
         this.bankId = manualEntry.getBank() != null ? manualEntry.getBank().getBankId() : null;
-        this.customerId = manualEntry.getCustomer() != null ? manualEntry.getCustomer().getCustomerId() : null;
         this.entryDate = manualEntry.getEntryDate();
         this.entryTime = manualEntry.getEntryTime();
         this.amount = manualEntry.getAmount();

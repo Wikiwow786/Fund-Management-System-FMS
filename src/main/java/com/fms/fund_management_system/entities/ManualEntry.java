@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
@@ -17,8 +15,6 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class ManualEntry extends BaseEntity{
 
-   // private volatile boolean updated = true;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long manualEntryId;
@@ -26,10 +22,6 @@ public class ManualEntry extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "bank_id", nullable = false, foreignKey = @ForeignKey(name = "fk_manual_entry_bank"))
     private Bank bank;
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_manual_entry_customer"))
-    private Customer customer;
 
     @Column(name = "entry_date", nullable = false)
     private Date entryDate;
@@ -51,31 +43,6 @@ public class ManualEntry extends BaseEntity{
     @Column(name = "remark")
     private String remark;
 
-  /*  @ManyToOne
-    @JoinColumn(name = "created_by", foreignKey = @ForeignKey(name = "fk_manual_entry_created_by"))
-    private User createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by", foreignKey = @ForeignKey(name = "fk_manual_entry_updated_by"))
-    private User updatedBy;
-
-    @Column(name = "updated_at")
-    private OffsetDateTime updatedAt;
-
-    @Column(name = "created_at", updatable = false)
-    private OffsetDateTime createdAt;*/
-
-   /* @PrePersist
-    public void onCreation() {
-        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        if (this.updated) {
-            this.setUpdatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
-        }
-    }*/
     public enum ManualEntryType {
         BANK_INTEREST, EXPENSES, OTHERS
     }

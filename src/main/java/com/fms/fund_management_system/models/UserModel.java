@@ -18,7 +18,7 @@ public class UserModel extends BaseModel{
     public UserModel(User user){
         super(user);
         this.userId = user.getUserId();
-        this.userName = user.getUserName();
+        this.userName = user.getName();
         this.email = user.getEmail();
         this.roleId = !ObjectUtils.isEmpty(user.getRole()) ?
                 user.getRole().getRoleId() : null;

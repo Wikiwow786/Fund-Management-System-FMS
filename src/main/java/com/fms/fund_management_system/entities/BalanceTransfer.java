@@ -48,16 +48,5 @@ public class BalanceTransfer extends BaseEntity{
     @Column(name = "remarks")
     private String remarks;
 
-    /*@Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;*/
 }
 

@@ -15,7 +15,6 @@ public class PermissionModel {
     private String permissionCode;
     private String description;
 
-    // Constructor that takes a Permission entity and initializes the model
     public PermissionModel(Permission permission) {
         this.permissionId = permission.getPermissionId();
         this.permissionCode = permission.getPermissionCode();

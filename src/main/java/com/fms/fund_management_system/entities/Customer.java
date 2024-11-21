@@ -5,10 +5,6 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 @Entity
 @Table(schema ="fms", name="customer")
@@ -17,7 +13,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Customer extends BaseEntity{
 
-   // private volatile boolean updated = true;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,25 +26,19 @@ public class Customer extends BaseEntity{
     private Double balance;
 
     @Column(name = "status")
-    private String status;
+    private CustomerStatus status;
 
-    @Column(name = "fund_in_fee_percentage")
+    @Column(name = "fund_in_fee_pct")
     private Double fundInFeePct;
 
-    @Column(name = "fund_out_fee_percentage")
+    @Column(name = "fund_out_fee_pct")
     private Double fundOutFeePct;
 
-    @Column(name = "commission_in_percentage")
-    private Double commissionInPct;
+    @Column(name = "fund_in_fee_commission_pct")
+    private Double fundInCommissionPct;
 
-    @Column(name = "commission_out_percentage")
-    private Double commissionOutPct;
-
- /*   @Column(name = "updated_at")
-    private OffsetDateTime updateAt;
-
-    @Column(name = "created_at", updatable = false)
-    private OffsetDateTime createdAt;*/
+    @Column(name = "fund_out_fee_commission_pct")
+    private Double fundOutCommissionPct;
 
     @Column(name = "remarks")
     private String remarks;
@@ -67,25 +56,9 @@ public class Customer extends BaseEntity{
     @OneToMany(mappedBy = "targetCustomer")
     private List<BalanceTransfer> incomingTransfers;
 
-   /* @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;*/
-
-
-  /*  @PrePersist
-    public void onCreation() {
-        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+    public enum CustomerStatus{
+        ACTIVE,
+        INACTIVE
     }
-
-    @PreUpdate
-    public void onUpdate() {
-        if (this.updated) {
-            this.setUpdateAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
-        }
-    }*/
 }
 

@@ -23,7 +23,6 @@ public class BalanceTransferModel extends BaseModel{
     private String remarks;
 
 
-    // Constructor that takes a BalanceTransfer entity and initializes the model
     public BalanceTransferModel(BalanceTransfer balanceTransfer) {
         super(balanceTransfer);
         this.transferId = balanceTransfer.getTransferId();

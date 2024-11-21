@@ -18,8 +18,6 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class UnclaimedAmount extends BaseEntity{
 
-   // private volatile boolean updated = true;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long unclaimedId;
@@ -51,37 +49,9 @@ public class UnclaimedAmount extends BaseEntity{
     @Column(name = "void_remark")
     private String voidRemark;
 
-   /* @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;*/
-
     @ManyToOne
     @JoinColumn(name = "claimed_by")
     private User claimedBy;
-
-  /*  @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime updatedAt;
-
-    @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private OffsetDateTime createdAt;
-
-    @PrePersist
-    public void onCreation() {
-        this.setCreatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        if (this.updated) {
-            this.setUpdatedAt(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
-        }
-    }*/
 
     public enum UnclaimedAmountStatus {
         UNCLAIMED, CLAIMED, VOIDED
