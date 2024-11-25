@@ -227,7 +227,8 @@ CREATE INDEX idx_role_permission_permission_id on fms.role_permission(permission
 
 CREATE TABLE fms.middleman_payout (
     payout_id BIGINT SERIAL PRIMARY KEY, -- Unique identifier for each payout
-    revenue_account_id BIGINT REFERENCES fms.revenue_account(revenue_account_id) ON DELETE CASCADE, -- Links to the revenue_account table
+    revenue_account_id BIGINT REFERENCES fms.revenue_account(revenue_account_id) ON DELETE CASCADE,
+    bank_id BIGINT REFERENCES fms.bank(bank_id) ON DELETE CASCADE,
     payout_amount DECIMAL(18, 2) NOT NULL, -- Amount to be paid out
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Timestamp when the payout was created
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL --ID of the user/system who processed the payout
