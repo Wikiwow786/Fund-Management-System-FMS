@@ -26,6 +26,7 @@ public class Customer extends BaseEntity{
     private Double balance;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private CustomerStatus status;
 
     @Column(name = "fund_in_fee_pct")
@@ -34,10 +35,10 @@ public class Customer extends BaseEntity{
     @Column(name = "fund_out_fee_pct")
     private Double fundOutFeePct;
 
-    @Column(name = "fund_in_fee_commission_pct")
+    @Column(name = "fund_in_commission_pct")
     private Double fundInCommissionPct;
 
-    @Column(name = "fund_out_fee_commission_pct")
+    @Column(name = "fund_out_commission_pct")
     private Double fundOutCommissionPct;
 
     @Column(name = "remarks")

@@ -25,6 +25,10 @@ public class MiddleManPayOut {
     @Column(name = "payout_amount", nullable = false, precision = 18, scale = 2)
     private BigDecimal payoutAmount;
 
+    @ManyToOne
+    @JoinColumn(name = "bank_id", nullable = false)
+    private Bank bank;
+
 
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
