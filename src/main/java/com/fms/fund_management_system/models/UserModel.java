@@ -13,7 +13,7 @@ public class UserModel extends BaseModel{
     private String userName;
     private String email;
     private Long roleId;
-    private String status;
+    private User.UserStatus status;
 
     public UserModel(User user){
         super(user);

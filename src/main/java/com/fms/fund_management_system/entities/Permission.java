@@ -18,10 +18,8 @@ public class Permission {
     @Column(name = "permission_id")
     private Long permissionId;
 
-    @Column(name = "permission_code")
+    @Column(name = "permission_name")
     private String permissionCode;
 
-    @Column(name = "description")
-    private String description;
 }
 

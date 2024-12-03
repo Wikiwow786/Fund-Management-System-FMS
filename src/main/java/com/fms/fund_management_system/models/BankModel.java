@@ -1,6 +1,7 @@
 package com.fms.fund_management_system.models;
 
 import com.fms.fund_management_system.entities.Bank;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,5 @@ public class BankModel extends BaseModel{
         this.balanceLimit = bank.getBalanceLimit();
         this.status = bank.getStatus();
         this.remarks = bank.getRemarks();
-
     }
 }

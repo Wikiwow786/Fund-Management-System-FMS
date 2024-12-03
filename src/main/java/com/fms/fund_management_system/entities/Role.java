@@ -22,6 +22,7 @@ public class Role {
     private String roleName;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private RoleStatus status;
 
     @OneToMany(mappedBy = "role")

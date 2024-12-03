@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,12 +32,14 @@ public class User extends BaseEntity{
     private Role role;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
-
-    public enum BankStatus {
+    public enum UserStatus{
         ACTIVE,
         INACTIVE
+
     }
+
 }
 
