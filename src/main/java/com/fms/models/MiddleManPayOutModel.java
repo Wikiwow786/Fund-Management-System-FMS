@@ -1,0 +1,32 @@
+package com.fms.models;
+
+import com.fms.entities.MiddleManPayOut;
+import com.fms.entities.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class MiddleManPayOutModel {
+
+    private Long payoutId;
+    private Long revenueAccountId;
+    private String revenueBankAccount;
+    private BigDecimal payoutAmount;
+    private OffsetDateTime createdAt;
+    private User createdBy;
+
+    public MiddleManPayOutModel(MiddleManPayOut middleManPayOut){
+        this.payoutId = middleManPayOut.getPayoutId();
+        this.revenueAccountId = middleManPayOut.getRevenueAccount() != null ? middleManPayOut.getRevenueAccount().getRevenueAccountId() : null;
+        this.payoutAmount = middleManPayOut.getPayoutAmount();
+        this.createdAt = middleManPayOut.getCreatedAt();
+        this.revenueBankAccount = middleManPayOut.getRevenueAccount() != null ? middleManPayOut.getRevenueAccount().getName() : null;
+
+    }
+}
