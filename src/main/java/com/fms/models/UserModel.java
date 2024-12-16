@@ -10,15 +10,16 @@ import org.springframework.util.ObjectUtils;
 @NoArgsConstructor
 public class UserModel extends BaseModel{
     private Long userId;
-    private String userName;
+    private String name;
     private String email;
+    private String password;
     private Long roleId;
     private User.UserStatus status;
 
     public UserModel(User user){
         super(user);
         this.userId = user.getUserId();
-        this.userName = user.getName();
+        this.name = user.getName();
         this.email = user.getEmail();
         this.roleId = !ObjectUtils.isEmpty(user.getRole()) ?
                 user.getRole().getRoleId() : null;

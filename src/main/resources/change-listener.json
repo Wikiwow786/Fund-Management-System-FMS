@@ -1,16 +1,25 @@
 {
   "listener": [
     {
-      "entityClass": "com.fms.fund_management_system.entities.Bank",
+      "entityClass": "com.fms.entities.Bank",
       "fields": [
         {
-          "listener": "com.fms.fund_management_system.listener.ChangeAuditListener",
+          "listener": "com.fms.listener.ChangeAuditListener",
           "changedOnly": false,
           "property": "BankModel",
           "symbolicText": "bank has been created",
-          "lookup": "",
-          "eventCode": "100",
-          "type": "300",
+          "finalisationPoint": "PRE_COMMIT"
+        }
+      ]
+    },
+    {
+      "entityClass": "com.fms.entities.Role",
+      "fields": [
+        {
+          "listener": "com.fms.listener.ChangeAuditListener",
+          "changedOnly": false,
+          "property": "RoleModel",
+          "symbolicText": "role has been created",
           "finalisationPoint": "PRE_COMMIT"
         }
       ]

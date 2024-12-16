@@ -27,8 +27,5 @@ public class ActivityLog {
     @Column(name = "date")
     private OffsetDateTime dateTime;
 
-    @Column(name = "remarks")
-    private String remarks;
-
 }
 

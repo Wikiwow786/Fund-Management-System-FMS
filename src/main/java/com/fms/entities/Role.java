@@ -28,6 +28,9 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private List<User> users;
 
+    @OneToMany(mappedBy = "role")
+    private List<RolePermission> rolePermissions;
+
     public enum RoleStatus{
         ACTIVE,
         INACTIVE

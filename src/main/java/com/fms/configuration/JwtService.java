@@ -22,11 +22,6 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private Long expiredAt;
 
-    @PostConstruct
-    public void logSecretKey() {
-        System.out.println("SECRET_KEY: " + SECRET_KEY);
-    }
-
 
     public Date getExpiredAt() {
         return new Date(System.currentTimeMillis() + expiredAt);

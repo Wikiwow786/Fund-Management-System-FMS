@@ -49,9 +49,6 @@ public class UserAccountService implements UserDetailsService {
     }
 
     private UserDetails processLogin(User user){
-
-
-        boolean status = true;
         return new SecurityUser(user.getUserId(), user.getEmail(), user.getPassword(),
                 user.getStatus().equals(User.UserStatus.ACTIVE),
                 true, true, true,
