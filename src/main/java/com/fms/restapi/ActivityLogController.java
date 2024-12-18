@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @RestController
-@RequestMapping(value = "/activityLogs")
+@RequestMapping(value = "/activity-logs")
 @RequiredArgsConstructor
 public class ActivityLogController {
     private final ActivityLogService activityLogService;

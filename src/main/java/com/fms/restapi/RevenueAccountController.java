@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RequestMapping(value = "/revenueAccounts")
+@RequestMapping(value = "/revenue-accounts")
 @RestController
 @RequiredArgsConstructor
 public class RevenueAccountController {

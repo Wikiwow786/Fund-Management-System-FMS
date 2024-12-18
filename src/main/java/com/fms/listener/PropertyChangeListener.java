@@ -1,8 +1,10 @@
 package com.fms.listener;
 
 
+import java.time.OffsetDateTime;
+
 public interface PropertyChangeListener
 {
-    Object postChange (Object entity, Object previousValue, Object newValue, boolean update, ChangeListenerType changeListenerType);
+    void postChange (Object entity, String action, OffsetDateTime dateTime);
 
 }
