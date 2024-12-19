@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 public class DbChangeListener implements PostInsertEventListener, PostUpdateEventListener
 {
     private final EntityManagerFactory entityManagerFactory;
-    private final DbChangeHandler dbChangeHandler;
+    private final DbChangeHandlerImpl dbChangeHandler;
 
     @PostConstruct
     private void init() {
