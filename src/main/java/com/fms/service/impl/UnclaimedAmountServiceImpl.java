@@ -31,7 +31,6 @@ public class UnclaimedAmountServiceImpl implements UnclaimedAmountService {
     private final BankRepository bankRepository;
 
     private final TransactionRepository transactionRepository;
-
     private final TransactionService transactionService;
     private final CustomerRepository customerRepository;
 
