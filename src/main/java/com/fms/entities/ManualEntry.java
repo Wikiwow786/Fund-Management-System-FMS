@@ -9,7 +9,7 @@ import java.sql.Time;
 import java.util.Date;
 
 @Entity
-@Table(name = "fms.manual_entry", schema = "fms")
+@Table(name = "manual_entry", schema = "fms")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
@@ -32,6 +32,10 @@ public class ManualEntry extends BaseEntity{
     @Column(name = "amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
+    @ManyToOne
+    @JoinColumn(name = "transaction_id")
+    private Transaction transaction;
+
     @Column(name = "entry_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private ManualEntryType entryType;
@@ -44,7 +48,7 @@ public class ManualEntry extends BaseEntity{
     private String remark;
 
     public enum ManualEntryType {
-        BANK_INTEREST, EXPENSES, OTHERS
+        BANK_INTEREST, EXPENSE, OTHERS
     }
 
     public enum ManualEntryStatus {

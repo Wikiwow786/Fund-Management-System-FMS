@@ -1,5 +1,6 @@
 package com.fms.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fms.entities.ManualEntry;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,9 @@ public class ManualEntryModel extends BaseModel{
     private Long manualEntryId;
     private Long bankId;
     private Long transactionId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date entryDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
     private Time entryTime;
     private BigDecimal amount;
     private ManualEntry.ManualEntryType entryType;
@@ -28,6 +31,7 @@ public class ManualEntryModel extends BaseModel{
         super(manualEntry);
         this.manualEntryId = manualEntry.getManualEntryId();
         this.bankId = manualEntry.getBank() != null ? manualEntry.getBank().getBankId() : null;
+        this.transactionId = manualEntry.getTransaction() != null ? manualEntry.getManualEntryId() : null;
         this.entryDate = manualEntry.getEntryDate();
         this.entryTime = manualEntry.getEntryTime();
         this.amount = manualEntry.getAmount();

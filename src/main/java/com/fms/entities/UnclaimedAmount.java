@@ -10,7 +10,7 @@ import java.sql.Time;
 import java.util.Date;
 
 @Entity
-@Table(schema ="fms", name = "unclaimed_amounts")
+@Table(schema ="fms", name = "unclaimed_amount")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
@@ -38,8 +38,12 @@ public class UnclaimedAmount extends BaseEntity{
     private UnclaimedAmountStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "transaction_id")
+    @JoinColumn(name = "claim_as_transaction_id")
     private Transaction transaction;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @Column(name = "remark")
     private String remark;
@@ -49,7 +53,7 @@ public class UnclaimedAmount extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "claimed_by")
-    private User claimedBy;
+    private Customer claimedBy;
 
     public enum UnclaimedAmountStatus {
         UNCLAIMED, CLAIMED, VOIDED

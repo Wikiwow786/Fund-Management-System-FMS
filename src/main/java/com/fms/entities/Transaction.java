@@ -51,7 +51,7 @@ public class Transaction extends BaseEntity{
     @Column(name = "external_id")
     private String externalId;
     public enum TransactionType {
-        FUND_IN, FUND_OUT
+        FUND_IN, FUND_OUT, OTHER
     }
 
     public enum TransactionStatus {

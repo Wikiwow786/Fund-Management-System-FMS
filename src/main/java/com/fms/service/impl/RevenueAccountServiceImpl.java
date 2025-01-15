@@ -35,8 +35,8 @@ public class RevenueAccountServiceImpl implements RevenueAccountService {
     @Override
     public Page<RevenueAccountModel> getAllRevenueAccounts(String revenueAccountName, RevenueAccount.RevenueAccountStatus status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
-        if(StringUtils.isNotBlank(revenueAccountName)){
-            filter.and(QRevenueAccount.revenueAccount.name.equalsIgnoreCase(revenueAccountName));
+        if(StringUtils.isNotBlank(search)){
+            filter.and(QRevenueAccount.revenueAccount.name.equalsIgnoreCase(search));
         }
         if(!ObjectUtils.isEmpty(status)){
             filter.and(QRevenueAccount.revenueAccount.status.eq(status));

@@ -39,8 +39,7 @@ public class BankServiceImpl implements BankService {
     public Page<BankModel> getAllBanks(String bankName, Bank.BankStatus status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
-            filter.and(QBank.bank.bankName.equalsIgnoreCase(bankName))
-                    .or(QBank.bank.status.eq(status));
+            filter.and(QBank.bank.bankName.equalsIgnoreCase(search));
 
         }
         return bankRepository.findAll(filter, pageable).map(BankModel::new);

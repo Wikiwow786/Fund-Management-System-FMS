@@ -1,5 +1,6 @@
 package com.fms.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fms.entities.Transaction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,9 @@ public class TransactionModel extends BaseModel{
     private Long bankId;
     private Long customerId;
     private BigDecimal amount;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date transactionDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
     private Time transactionTime;
     private Transaction.TransactionStatus status;
     private String remark;

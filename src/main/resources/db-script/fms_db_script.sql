@@ -233,3 +233,16 @@ CREATE TABLE fms.middleman_payout (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Timestamp when the payout was created
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL --ID of the user/system who processed the payout
 );
+
+CREATE TABLE fms.exception_list (
+    exception_id BIGINT SERIAL PRIMARY KEY ,
+    bank_id INT REFERENCES fms.bank(bank_id) ON DELETE CASCADE,
+    cause TEXT NOT NULL,
+    solution TEXT,
+    status VARCHAR(50) NOT NULL,
+    created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    system_balance  NUMERIC(15, 2),
+    input_balance  NUMERIC(15, 2),
+    imbalance_amount  NUMERIC(15, 2)
+);

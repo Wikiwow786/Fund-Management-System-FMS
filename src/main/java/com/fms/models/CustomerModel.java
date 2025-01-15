@@ -1,12 +1,9 @@
 package com.fms.models;
 
-import com.fms.entities.BalanceTransfer;
 import com.fms.entities.Customer;
-import com.fms.entities.Transaction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
 
 @Getter
 @Setter
@@ -18,16 +15,12 @@ public class CustomerModel extends BaseModel{
     private Double balance;
     private Double fundInFeePct;
     private Double fundOutFeePct;
-    private Double commissionInPct;
-    private Double commissionOutPct;
+    private Double fundInCommissionPct;
+    private Double fundOutCommissionPct;
 
     private Customer.CustomerStatus status;
     private Long middleManId;
-
     private String remarks;
-    private List<Transaction> transactions;
-    private List<BalanceTransfer> outgoingTransfers;
-    private List<BalanceTransfer> incomingTransfers;
 
     public CustomerModel(Customer customer){
         super(customer);
@@ -37,13 +30,10 @@ public class CustomerModel extends BaseModel{
         this.balance = customer.getBalance();
         this.fundInFeePct = customer.getFundInFeePct();
         this.fundOutFeePct = customer.getFundOutFeePct();
-        this.commissionInPct = customer.getFundInCommissionPct();
-        this.commissionOutPct = customer.getFundOutCommissionPct();
+        this.fundInCommissionPct = customer.getFundInCommissionPct();
+        this.fundOutCommissionPct = customer.getFundOutCommissionPct();
         this.middleManId = customer.getUser() != null ? customer.getUser().getUserId() : null;
         this.remarks = customer.getRemarks();
-        this.transactions = customer.getTransactions();
-        this.outgoingTransfers = customer.getOutgoingTransfers();
-        this.incomingTransfers = customer.getIncomingTransfers();
     }
 
 
