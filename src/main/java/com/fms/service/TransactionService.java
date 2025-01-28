@@ -5,14 +5,15 @@ import com.fms.security.SecurityUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.sql.Time;
+import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.Date;
 
 public interface TransactionService {
 
     TransactionModel getTransaction(Long transactionId);
 
-    Page<TransactionModel> getAllTransactions(String search, Date dateFrom, Date dateTo, Time timeFrom, Time timeTo, Pageable pageable);
+    Page<TransactionModel> getAllTransactions(String search, Long transactionId, BigDecimal amount, Date dateFrom, Date dateTo, LocalTime timeFrom, LocalTime timeTo, Pageable pageable);
 
     TransactionModel createOrUpdate(TransactionModel transactionModel, Long transactionId, SecurityUser securityUser);
 }

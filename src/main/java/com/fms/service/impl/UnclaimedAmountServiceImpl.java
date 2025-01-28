@@ -1,5 +1,6 @@
 package com.fms.service.impl;
 
+import com.fms.entities.Customer;
 import com.fms.entities.Transaction;
 import com.fms.entities.UnclaimedAmount;
 import com.fms.entities.User;
@@ -69,7 +70,6 @@ public class UnclaimedAmountServiceImpl implements UnclaimedAmountService {
         if(null != unclaimedAmountModel.getBankId()){
             unclaimedAmount.setBank(bankRepository.findById(unclaimedAmountModel.getBankId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
         }
-        if(unclaimedAmountModel.getStatus().equals(UnclaimedAmount.UnclaimedAmountStatus.CLAIMED) || unclaimedAmountModel.getStatus().equals(UnclaimedAmount.UnclaimedAmountStatus.VOIDED)) {
             TransactionModel transactionModel = createTransactionForUnclaimedAmount(unclaimedAmountModel, unclaimedAmountId, securityUser);
             if (null != transactionModel.getTransactionId()) {
                 unclaimedAmount.setTransaction(transactionRepository.findById(transactionModel.getTransactionId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
@@ -78,28 +78,66 @@ public class UnclaimedAmountServiceImpl implements UnclaimedAmountService {
                 unclaimedAmount.setCustomer(customerRepository.findById(unclaimedAmountModel.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
                unclaimedAmount.setClaimedBy(customerRepository.findById(unclaimedAmountModel.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
             }
-        }
         return unclaimedAmount;
     }
 
     private TransactionModel createTransactionForUnclaimedAmount(UnclaimedAmountModel unclaimedAmountModel, Long unclaimedAmountId, SecurityUser securityUser){
-        TransactionModel transactionModel = buildTransactionModelForUnclaimedAmount(unclaimedAmountModel,unclaimedAmountId);
+        TransactionModel transactionModel = buildTransactionModelForUnclaimedAmount(unclaimedAmountModel,unclaimedAmountId,securityUser);
         return transactionService.createOrUpdate(transactionModel,null,securityUser);
     }
 
-    private TransactionModel buildTransactionModelForUnclaimedAmount(UnclaimedAmountModel unclaimedAmountModel,Long unclaimedAmountId) {
+    private TransactionModel buildTransactionModelForUnclaimedAmount(UnclaimedAmountModel unclaimedAmountModel,Long unclaimedAmountId,SecurityUser securityUser) {
         TransactionModel transactionModel = new TransactionModel();
         if(null != unclaimedAmountId) {
-            UnclaimedAmount unclaimedAmount = unclaimedAmountRepository.findById(unclaimedAmountId)
-                    .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            updateUnclaimedAmount(unclaimedAmountId,unclaimedAmountModel,transactionModel,securityUser);
+        }
+        else{
             transactionModel.setTransactionDate(new Date());
             transactionModel.setTransactionTime(new Time(System.currentTimeMillis()));
-            transactionModel.setBankId(unclaimedAmount.getBank().getBankId());
-            transactionModel.setAmount(unclaimedAmount.getAmount());
+            transactionModel.setBankId(unclaimedAmountModel.getBankId());
+            transactionModel.setAmount(unclaimedAmountModel.getAmount());
             transactionModel.setStatus(Transaction.TransactionStatus.COMPLETED);
-            transactionModel.setTransactionType(Transaction.TransactionType.OTHER);
-            transactionModel.setCustomerId(unclaimedAmountModel.getCustomerId());
-        }
+            if(unclaimedAmountModel.getStatus().equals(UnclaimedAmount.UnclaimedAmountStatus.UNCLAIMED)) {
+                transactionModel.setTransactionType(Transaction.TransactionType.FUND_IN);
+            }
+           }
+
         return transactionModel;
     }
+
+    private void updateUnclaimedAmount(Long unclaimedAmountId,UnclaimedAmountModel unclaimedAmountModel,TransactionModel transactionModel,SecurityUser securityUser){
+        UnclaimedAmount unclaimedAmount = unclaimedAmountRepository.findById(unclaimedAmountId)
+                .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+        transactionModel.setTransactionDate(new Date());
+        transactionModel.setTransactionTime(new Time(System.currentTimeMillis()));
+        transactionModel.setBankId(unclaimedAmount.getBank().getBankId());
+        transactionModel.setAmount(unclaimedAmount.getAmount());
+        transactionModel.setStatus(Transaction.TransactionStatus.COMPLETED);
+        if(unclaimedAmountModel.getStatus().equals(UnclaimedAmount.UnclaimedAmountStatus.CLAIMED) || unclaimedAmountModel.getStatus().equals(UnclaimedAmount.UnclaimedAmountStatus.VOIDED)) {
+            transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
+            processCustomerClaimedAmount(unclaimedAmountModel.getStatus(),unclaimedAmountModel,securityUser);
+        }
+    }
+
+    private void processCustomerClaimedAmount(UnclaimedAmount.UnclaimedAmountStatus status, UnclaimedAmountModel unclaimedAmountModel,SecurityUser securityUser){
+        if(status.equals(UnclaimedAmount.UnclaimedAmountStatus.CLAIMED)) {
+            Transaction transaction = new Transaction();
+            Customer customer = customerRepository.findById(unclaimedAmountModel.getCustomerId())
+                    .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            transaction.setCreatedBy(userRepository.findById(securityUser.getUserId())
+                    .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+            transaction.setTransactionDate(new Date());
+            transaction.setTransactionTime(new Time(System.currentTimeMillis()));
+            transaction.setAmount(unclaimedAmountModel.getAmount());
+            transaction.setStatus(Transaction.TransactionStatus.COMPLETED);
+            transaction.setCustomer(customerRepository.findById(unclaimedAmountModel.getCustomerId())
+                    .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+            transaction.setTransactionType(Transaction.TransactionType.FUND_IN);
+            transaction.setCustomer(customer);
+            customer.setBalance(customer.getBalance().add(unclaimedAmountModel.getAmount()));
+            customerRepository.save(customer);
+            transactionRepository.save(transaction);
+        }
+    }
+
 }

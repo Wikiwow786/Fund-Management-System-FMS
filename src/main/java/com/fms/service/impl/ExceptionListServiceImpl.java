@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -38,15 +40,14 @@ public class ExceptionListServiceImpl implements ExceptionListService {
         Bank bank = bankRepository.findById(exceptionListModel.getBankId())
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
 
-        double systemBalance = bank.getBalance();
-        double imbalanceAmount = Math.abs(systemBalance - exceptionListModel.getInputBalance());
+        BigDecimal systemBalance = bank.getBalance();
+        BigDecimal imbalanceAmount = systemBalance.subtract(exceptionListModel.getInputBalance()).abs();
 
-        if (imbalanceAmount > 0) {
-
+        if (imbalanceAmount.compareTo(BigDecimal.ZERO) > 0) {
             exceptionListModel.setCause("Imbalance detected during daily check-out");
             exceptionListModel.setStatus(ExceptionList.ExceptionStatus.UNEXPLAINED);
             exceptionListModel.setImbalanceAmount(imbalanceAmount);
-            createOrUpdate(exceptionListModel,null,securityUser);
+            createOrUpdate(exceptionListModel, null, securityUser);
             throw new FmsException("Imbalance detected. Exception created.");
         }
 

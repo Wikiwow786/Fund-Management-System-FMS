@@ -5,6 +5,8 @@ import com.fms.entities.RevenueAccount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -14,7 +16,7 @@ public class RevenueAccountModel {
 
     private Long revenueAccountId;
     private String name;
-    private Double balance;
+    private BigDecimal balance;
     private RevenueAccount.RevenueAccountStatus status;
 
     @JsonFormat( shape = JsonFormat.Shape.STRING,

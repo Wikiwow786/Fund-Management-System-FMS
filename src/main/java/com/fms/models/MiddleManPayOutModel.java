@@ -16,6 +16,7 @@ public class MiddleManPayOutModel {
 
     private Long payoutId;
     private Long revenueAccountId;
+    private Long bankId;
     private String revenueBankAccount;
     private BigDecimal payoutAmount;
     private OffsetDateTime createdAt;
@@ -24,6 +25,7 @@ public class MiddleManPayOutModel {
     public MiddleManPayOutModel(MiddleManPayOut middleManPayOut){
         this.payoutId = middleManPayOut.getPayoutId();
         this.revenueAccountId = middleManPayOut.getRevenueAccount() != null ? middleManPayOut.getRevenueAccount().getRevenueAccountId() : null;
+        this.bankId = middleManPayOut.getBank() != null ? middleManPayOut.getBank().getBankId() : null;
         this.payoutAmount = middleManPayOut.getPayoutAmount();
         this.createdAt = middleManPayOut.getCreatedAt();
         this.revenueBankAccount = middleManPayOut.getRevenueAccount() != null ? middleManPayOut.getRevenueAccount().getName() : null;

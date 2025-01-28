@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 
 
 @Getter
@@ -13,7 +14,7 @@ import lombok.Setter;
 public class BankModel extends BaseModel{
     private Long bankId;
     private String bankName;
-    private Double balance;
+    private BigDecimal balance;
     private Double balanceLimit;
     private Bank.BankStatus status;
     private String remarks;

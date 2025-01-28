@@ -149,7 +149,7 @@ CREATE TABLE fms.balance_transfer_transaction(
 CREATE TABLE fms.revenue_account (
     revenue_account_id BIGINT NOT NULL CONSTRAINT pk_revenue_account PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    balance DECIMAL(18, 2) DEFAULT 0,
+    balance NUMERIC(15, 2) DEFAULT 0.00,
     status status_enum NOT NULL DEFAULT 'ACTIVE',
     start_date DATE,
     remarks TEXT
@@ -229,7 +229,7 @@ CREATE TABLE fms.middleman_payout (
     payout_id BIGINT SERIAL PRIMARY KEY, -- Unique identifier for each payout
     revenue_account_id BIGINT REFERENCES fms.revenue_account(revenue_account_id) ON DELETE CASCADE,
     bank_id BIGINT REFERENCES fms.bank(bank_id) ON DELETE CASCADE,
-    payout_amount DECIMAL(18, 2) NOT NULL, -- Amount to be paid out
+    payout_amount NUMERIC(15, 2) DEFAULT 0.00, -- Amount to be paid out
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- Timestamp when the payout was created
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL --ID of the user/system who processed the payout
 );

@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(schema ="fms", name = "bank")
 @Getter
@@ -23,7 +25,7 @@ public class Bank extends BaseEntity{
     private String bankName;
 
     @Column(name="balance")
-    private Double balance;
+    private BigDecimal balance;
 
     @Column(name="balance_limit")
     private Double balanceLimit;

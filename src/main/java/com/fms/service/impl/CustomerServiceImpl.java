@@ -19,7 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +40,12 @@ public class CustomerServiceImpl implements CustomerService {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
             filter.and(QCustomer.customer.customerName.containsIgnoreCase(search));
+        }
+        if(startDate != null){
+            filter.and(QCustomer.customer.createdAt.goe(startDate.atStartOfDay().atOffset(ZoneOffset.UTC)));
+        }
+        if(endDate != null){
+            filter.and(QCustomer.customer.createdAt.loe(endDate.atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC)));
         }
         return customerRepository.findAll(filter, pageable).map(CustomerModel::new);
     }

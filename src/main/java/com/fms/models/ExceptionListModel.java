@@ -4,6 +4,8 @@ import com.fms.entities.ExceptionList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -21,9 +23,9 @@ public class ExceptionListModel {
     private String createdBy;
     private ExceptionList.ExceptionStatus status;
 
-    private Double systemBalance;
-    private Double inputBalance;
-    private Double imbalanceAmount;
+    private BigDecimal systemBalance;
+    private BigDecimal inputBalance;
+    private BigDecimal imbalanceAmount;
 
     public ExceptionListModel(ExceptionList exceptionList){
         this.exceptionId = exceptionList.getExceptionId();

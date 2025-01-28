@@ -25,7 +25,7 @@ public class Transaction extends BaseEntity{
     private TransactionType transactionType;
 
     @ManyToOne
-    @JoinColumn(name = "bank_id", nullable = false)
+    @JoinColumn(name = "bank_id")
     private Bank bank;
 
     @ManyToOne
@@ -51,7 +51,7 @@ public class Transaction extends BaseEntity{
     @Column(name = "external_id")
     private String externalId;
     public enum TransactionType {
-        FUND_IN, FUND_OUT, OTHER
+        FUND_IN, FUND_OUT
     }
 
     public enum TransactionStatus {

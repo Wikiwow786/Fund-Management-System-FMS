@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -38,13 +39,13 @@ public class ExceptionList{
     private ExceptionStatus status;
 
     @Column(name="system_balance")
-    private Double systemBalance;
+    private BigDecimal systemBalance;
 
     @Column(name="input_balance")
-    private Double inputBalance;
+    private BigDecimal inputBalance;
 
     @Column(name="imbalance_amount")
-    private Double imbalanceAmount;
+    private BigDecimal imbalanceAmount;
 
     public enum ExceptionStatus{
         EXPLAINED,

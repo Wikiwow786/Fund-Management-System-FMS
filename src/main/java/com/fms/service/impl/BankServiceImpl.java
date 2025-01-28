@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 @RequiredArgsConstructor
 @Service
@@ -40,7 +42,16 @@ public class BankServiceImpl implements BankService {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
             filter.and(QBank.bank.bankName.equalsIgnoreCase(search));
+        }
+        if(status != null){
+            filter.and(QBank.bank.status.eq(status));
 
+        }
+        if(startDate != null){
+            filter.and(QBank.bank.createdAt.goe(startDate.atStartOfDay().atOffset(ZoneOffset.UTC)));
+        }
+        if(endDate != null){
+            filter.and(QBank.bank.createdAt.loe(endDate.atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC)));
         }
         return bankRepository.findAll(filter, pageable).map(BankModel::new);
     }

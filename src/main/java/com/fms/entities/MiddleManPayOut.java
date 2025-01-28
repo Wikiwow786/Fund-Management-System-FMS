@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(schema ="fms", name = "bank")
+@Table(schema ="fms", name = "middleman_payout")
 @Getter
 @Setter
 public class MiddleManPayOut {
@@ -22,7 +22,7 @@ public class MiddleManPayOut {
     @JoinColumn(name = "revenue_account_id", nullable = false)
     private RevenueAccount revenueAccount;
 
-    @Column(name = "payout_amount", nullable = false, precision = 18, scale = 2)
+    @Column(name = "payout_amount", nullable = false)
     private BigDecimal payoutAmount;
 
     @ManyToOne

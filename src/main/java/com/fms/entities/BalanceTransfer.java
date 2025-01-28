@@ -26,23 +26,23 @@ public class BalanceTransfer extends BaseEntity{
     @Column(name = "transfer_time", nullable = false)
     private Time transferTime;
 
-    @Column(name = "amount", nullable = false, precision = 18, scale = 2)
+    @Column(name = "amount", nullable = false,precision = 15, scale = 2)
     private BigDecimal amount;
 
     @ManyToOne
-    @JoinColumn(name = "source_customer_id", nullable = false)
+    @JoinColumn(name = "source_customer_id")
     private Customer sourceCustomer;
 
     @ManyToOne
-    @JoinColumn(name = "target_customer_id", nullable = false)
+    @JoinColumn(name = "target_customer_id")
     private Customer targetCustomer;
 
     @ManyToOne
-    @JoinColumn(name = "source_bank_id", nullable = false)
+    @JoinColumn(name = "source_bank_id")
     private Bank sourceBank;
 
     @ManyToOne
-    @JoinColumn(name = "target_bank_id", nullable = false)
+    @JoinColumn(name = "target_bank_id")
     private Bank targetBank;
 
     @Column(name = "remarks")

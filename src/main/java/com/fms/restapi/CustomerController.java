@@ -8,6 +8,7 @@ import com.fms.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +25,8 @@ public class CustomerController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<CustomerModel>> fetchAll(@RequestParam(required = false) String customerName,
                                                     @RequestParam(required = false) Customer.CustomerStatus status,
-                                                    @RequestParam(required = false) LocalDate startDate,
-                                                    @RequestParam(required = false) LocalDate endDate, @RequestParam(required = false) String search,
+                                                    @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+                                                    @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate, @RequestParam(required = false) String search,
                                                     Pageable pageable) {
 
         return ResponseEntity.ok(customerService.getAllCustomers(customerName,status,startDate,endDate, search, pageable));

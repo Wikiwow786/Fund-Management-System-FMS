@@ -99,8 +99,13 @@ public class ManualEntryServiceImpl implements ManualEntryService {
             transactionModel.setTransactionTime(manualEntryModel.getEntryTime());
             transactionModel.setBankId(manualEntryModel.getBankId());
         }
+        if(manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.BANK_INTEREST)){
+            transactionModel.setTransactionType(Transaction.TransactionType.FUND_IN);
+        }
+        if(manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.EXPENSE)){
+            transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
+        }
         transactionModel.setStatus(Transaction.TransactionStatus.COMPLETED);
-        transactionModel.setTransactionType(Transaction.TransactionType.OTHER);
         return transactionModel;
     }
 }

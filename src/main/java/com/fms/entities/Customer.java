@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.util.List;
 @Entity
 @Table(schema ="fms", name="customer")
@@ -23,7 +25,7 @@ public class Customer extends BaseEntity{
     private String customerName;
 
     @Column(name = "balance")
-    private Double balance;
+    private BigDecimal balance;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

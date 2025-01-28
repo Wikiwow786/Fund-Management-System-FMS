@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,7 +14,7 @@ public class CustomerModel extends BaseModel{
 
     private Long customerId;
     private String customerName;
-    private Double balance;
+    private BigDecimal balance;
     private Double fundInFeePct;
     private Double fundOutFeePct;
     private Double fundInCommissionPct;

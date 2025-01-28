@@ -1,8 +1,6 @@
 package com.fms.service.impl;
 
-import com.fms.entities.QTransaction;
-import com.fms.entities.Transaction;
-import com.fms.entities.User;
+import com.fms.entities.*;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.TransactionMapper;
 import com.fms.models.TransactionModel;
@@ -21,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 
 
@@ -42,19 +42,30 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<TransactionModel> getAllTransactions(String search, Date dateFrom, Date dateTo, Time timeFrom, Time timeTo, Pageable pageable) {
+    public Page<TransactionModel> getAllTransactions(String search, Long transactionId, BigDecimal amount, Date dateFrom, Date dateTo, LocalTime timeFrom, LocalTime timeTo, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
             filter.and(QTransaction.transaction.customer.customerName.equalsIgnoreCase(search))
-                    .or(QTransaction.transaction.bank.bankName.equalsIgnoreCase(search));
+                    .or(QTransaction.transaction.bank.bankName.equalsIgnoreCase(search))
+                    .or(QTransaction.transaction.createdBy.name.equalsIgnoreCase(search))
+                    .or(QTransaction.transaction.transactionType.eq(Transaction.TransactionType.valueOf(search)));
         }
-        if(!ObjectUtils.isEmpty(dateFrom) && !ObjectUtils.isEmpty(dateTo)){
-            filter.and(QTransaction.transaction.transactionDate.goe(dateFrom))
-                    .and(QTransaction.transaction.transactionDate.loe(dateTo));
+        if(null != amount){
+            filter.and(QTransaction.transaction.amount.eq(amount));
+        }
+        if(null != transactionId){
+            filter.and(QTransaction.transaction.transactionId.eq(transactionId));
+        }
+        if(!ObjectUtils.isEmpty(dateFrom)){
+            filter.and(QTransaction.transaction.transactionDate.goe(dateFrom));
+        }
+        if(!ObjectUtils.isEmpty(dateTo)){
+            filter.and(QTransaction.transaction.transactionDate.loe(dateTo));
+
         }
         if(!ObjectUtils.isEmpty(timeFrom) && !ObjectUtils.isEmpty(timeTo)){
-            filter.and(QTransaction.transaction.transactionTime.after(timeFrom))
-                    .and(QTransaction.transaction.transactionTime.before(timeTo));
+            filter.and(QTransaction.transaction.transactionTime.after(Time.valueOf(timeFrom)))
+                    .and(QTransaction.transaction.transactionTime.before(Time.valueOf(timeTo)));
         }
         return transactionRepository.findAll(filter, pageable).map(TransactionModel::new);
     }
@@ -80,12 +91,31 @@ public class TransactionServiceImpl implements TransactionService {
         }
         transactionMapper.toEntity(transactionModel,transaction);
         if(null != transactionModel.getBankId()){
-            transaction.setBank(bankRepository.findById(transactionModel.getBankId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+            Bank bank = bankRepository.findById(transactionModel.getBankId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            transaction.setBank(bank);
+            if(transactionModel.getTransactionType().equals(Transaction.TransactionType.FUND_IN)){
+                bank.setBalance(bank.getBalance().add(transactionModel.getAmount()));
+                bankRepository.save(bank);
+            }
+            else if(transactionModel.getTransactionType().equals(Transaction.TransactionType.FUND_OUT)){
+                bank.setBalance(bank.getBalance().subtract(transactionModel.getAmount()));
+                bankRepository.save(bank);
+            }
         }
         if(null != transactionModel.getCustomerId()){
-            transaction.setCustomer(customerRepository.findById(transactionModel.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
-
+            Customer customer = customerRepository.findById(transactionModel.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            transaction.setCustomer(customer);
+            if(transactionModel.getTransactionType().equals(Transaction.TransactionType.FUND_IN)){
+                customer.setBalance(customer.getBalance().add(transactionModel.getAmount()));
+                customerRepository.save(customer);
+            }
+            else if(transactionModel.getTransactionType().equals(Transaction.TransactionType.FUND_OUT)){
+                customer.setBalance(customer.getBalance().subtract(transactionModel.getAmount()));
+                customerRepository.save(customer);
+            }
         }
         return transaction;
     }
+
+
 }
