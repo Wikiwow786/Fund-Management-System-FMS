@@ -7,6 +7,7 @@ import com.fms.service.RevenueAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,8 @@ public class RevenueAccountController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<RevenueAccountModel>> fetchAll(@RequestParam(required = false) String revenueAccountName,
                                                               @RequestParam(required = false) RevenueAccount.RevenueAccountStatus status,
-                                                              @RequestParam(required = false) LocalDate startDate,
-                                                              @RequestParam(required = false) LocalDate endDate, @RequestParam(required = false) String search,
+                                                              @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+                                                              @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy")  LocalDate endDate, @RequestParam(required = false) String search,
                                                               Pageable pageable) {
 
         return ResponseEntity.ok(revenueAccountService.getAllRevenueAccounts(revenueAccountName,status,startDate,endDate, search, pageable));

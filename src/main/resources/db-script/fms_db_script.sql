@@ -7,7 +7,9 @@ CREATE TABLE fms.bank (
     status status_enum NOT NULL DEFAULT 'ACTIVE',
     remarks TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
+    updated_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL
 );
 
 INDEXES FOR Bank:
@@ -29,7 +31,9 @@ CREATE TABLE fms.customer (
     remarks TEXT,
     status status_enum NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,
+        updated_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL
 );
 
 INDEXES FOR CUSTOMER:
@@ -97,6 +101,7 @@ CREATE TABLE fms.unclaimed_amount (
     transaction_date DATE NOT NULL,
     transaction_time TIME NOT NULL,
     status VARCHAR(50) NOT NULL CHECK (status IN ('UNCLAIMED', 'CLAIMED', 'VOIDED')),
+    customer_id INT REFERENCES fms.customer(customer_id) ON DELETE SET NULL,
     remark TEXT,
     void_remark TEXT,
     created_by INT REFERENCES fms.user(user_id) ON DELETE SET NULL,

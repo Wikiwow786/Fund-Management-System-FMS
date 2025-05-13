@@ -9,16 +9,14 @@ import com.fms.models.RevenueAccountModel;
 import com.fms.repositories.RevenueAccountRepository;
 import com.fms.service.RevenueAccountService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -36,11 +34,22 @@ public class RevenueAccountServiceImpl implements RevenueAccountService {
     public Page<RevenueAccountModel> getAllRevenueAccounts(String revenueAccountName, RevenueAccount.RevenueAccountStatus status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
-            filter.and(QRevenueAccount.revenueAccount.name.equalsIgnoreCase(search));
+            BooleanExpression searchCondition =
+                    QRevenueAccount.revenueAccount.name.containsIgnoreCase(search);
+            filter.and(searchCondition);
         }
-        if(!ObjectUtils.isEmpty(status)){
+
+        if(status != null){
             filter.and(QRevenueAccount.revenueAccount.status.eq(status));
+
         }
+        if(startDate != null){
+            filter.and(QRevenueAccount.revenueAccount.startDate.goe(startDate));
+        }
+        if(endDate != null){
+            filter.and(QRevenueAccount.revenueAccount.startDate.loe(startDate));
+        }
+
         return revenueAccountRepository.findAll(filter, pageable).map(RevenueAccountModel::new);
     }
 

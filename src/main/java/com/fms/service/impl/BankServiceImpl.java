@@ -12,6 +12,7 @@ import com.fms.repositories.UserRepository;
 import com.fms.security.SecurityUser;
 import com.fms.service.BankService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class BankServiceImpl implements BankService {
@@ -40,8 +41,12 @@ public class BankServiceImpl implements BankService {
     @Override
     public Page<BankModel> getAllBanks(String bankName, Bank.BankStatus status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
+
         if(StringUtils.isNotBlank(search)){
-            filter.and(QBank.bank.bankName.equalsIgnoreCase(search));
+            BooleanExpression searchCondition =
+                    QBank.bank.bankName.containsIgnoreCase(search)
+                            .or(QBank.bank.status.stringValue().equalsIgnoreCase(search));
+            filter.and(searchCondition);
         }
         if(status != null){
             filter.and(QBank.bank.status.eq(status));

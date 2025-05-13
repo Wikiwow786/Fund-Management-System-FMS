@@ -1,7 +1,6 @@
 package com.fms.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fms.entities.Customer;
 import com.fms.entities.UnclaimedAmount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,7 @@ import java.util.Date;
 public class UnclaimedAmountModel extends BaseModel{
     private Long unclaimedId;
     private Long bankId;
+    private String bankName;
     private BigDecimal amount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date transactionDate;
@@ -28,12 +28,15 @@ public class UnclaimedAmountModel extends BaseModel{
     private String remark;
     private String voidRemark;
     private String claimedBy;
+    private String createdByUser;
+    private String updatedByUser;
 
 
     public UnclaimedAmountModel(UnclaimedAmount unclaimedAmount) {
         super(unclaimedAmount);
         this.unclaimedId = unclaimedAmount.getUnclaimedId();
         this.bankId = unclaimedAmount.getBank() != null ? unclaimedAmount.getBank().getBankId() : null;
+        this.bankName = unclaimedAmount.getBank() != null ? unclaimedAmount.getBank().getBankName() : null;
         this.amount = unclaimedAmount.getAmount();
         this.transactionDate = unclaimedAmount.getTransactionDate();
         this.transactionTime = unclaimedAmount.getTransactionTime();
@@ -43,6 +46,8 @@ public class UnclaimedAmountModel extends BaseModel{
         this.remark = unclaimedAmount.getRemark();
         this.voidRemark = unclaimedAmount.getVoidRemark();
         this.claimedBy = unclaimedAmount.getClaimedBy() != null ? unclaimedAmount.getClaimedBy().getCustomerName() : null;
+        this.createdByUser = unclaimedAmount.getCreatedBy() != null ? unclaimedAmount.getCreatedBy().getName() : null;
+        this.updatedByUser = unclaimedAmount.getUpdatedBy() != null ? unclaimedAmount.getUpdatedBy().getName(): null;
     }
 
 }

@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 @RestController
 @RequestMapping(value = "/exception-list")
@@ -23,12 +22,12 @@ public class ExceptionListController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<ExceptionListModel>> fetchAll(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String search, @RequestParam(required = false)String status, @RequestParam(required = false)String createdBy,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dateTo,
             Pageable pageable) {
 
-        return ResponseEntity.ok(exceptionListService.getAllExceptionLists(search, dateFrom,dateTo,pageable));
+        return ResponseEntity.ok(exceptionListService.getAllExceptionLists(search,status,createdBy, dateFrom,dateTo,pageable));
     }
 
     @GetMapping(value = "/{exceptionListId}", produces = MediaType.APPLICATION_JSON_VALUE)

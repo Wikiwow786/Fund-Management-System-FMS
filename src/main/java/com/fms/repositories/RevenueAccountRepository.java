@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface RevenueAccountRepository extends JpaRepository<RevenueAccount,Long>, QuerydslPredicateExecutor<RevenueAccount> {
     List<RevenueAccount>findAllByRevenueAccountIdIn(List<Long> revenueAccountIds);
+    RevenueAccount findByName(String name);
 }

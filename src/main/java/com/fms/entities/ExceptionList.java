@@ -36,6 +36,7 @@ public class ExceptionList{
     private User createdBy;
 
     @Column(name="status")
+    @Enumerated(EnumType.STRING)
     private ExceptionStatus status;
 
     @Column(name="system_balance")

@@ -46,9 +46,13 @@ public class Customer extends BaseEntity{
     @Column(name = "remarks")
     private String remarks;
 
-    @ManyToOne
+   /* @ManyToOne
     @JoinColumn(name = "middleman_id")
-    private User user;
+    private User user;*/
+
+    @ManyToOne
+    @JoinColumn(name = "revenue_account_id")
+    private RevenueAccount revenueAccount;
 
     @OneToMany(mappedBy = "customer")
     private List<Transaction> transactions;

@@ -14,13 +14,14 @@ public class ActivityLogModel {
     private Long logId;
     private Long userId;
     private String user;
+    private String userName;
     private String action;
     private OffsetDateTime dateTime;
     public ActivityLogModel(ActivityLog activityLog) {
         this.logId = activityLog.getLogId();
-        this.userId = activityLog.getUser() != null ? activityLog.getUser().getUserId() : null;
+        this.userId = activityLog.getUserId();
         this.action = activityLog.getAction();
         this.dateTime = activityLog.getDateTime();
-        this.user = activityLog.getUser().getName();
+        this.userName = activityLog.getUserName();
     }
 }

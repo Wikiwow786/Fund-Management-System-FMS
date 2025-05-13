@@ -15,5 +15,5 @@ public interface ReportingService {
 
     Page<CustomerSummaryReportModel> getCustomerSummaryReport(Long customerId, LocalDate dateFrom, LocalDate dateTo, Pageable pageable);
 
-    Page<CommissionSummaryReportModel> getCommissionSummaryReport(LocalDate dateFrom, LocalDate dateTo, Pageable pageable);
+    Page<CommissionSummaryReportModel> getCommissionSummaryReport(LocalDate dateFrom, LocalDate dateTo,LocalDate summaryDate,String revenueAccount, Pageable pageable);
 }

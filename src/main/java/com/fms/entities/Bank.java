@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Entity
 @Table(schema ="fms", name = "bank")
@@ -36,6 +38,9 @@ public class Bank extends BaseEntity{
 
     @Column(name="remarks")
     private String remarks;
+
+    @Column(name = "start_date", nullable = false)
+    private Date startDate;
 
 
     public enum BankStatus {

@@ -13,8 +13,10 @@ import java.time.LocalDateTime;
 public class CustomerSummaryReportModel {
 
     private Long customerId;
+    private Long transactionId;
     private String customerName;
-    private LocalDateTime summaryDate;
+    private String createdBy;
+    private LocalDateTime transactionDateTime;
     private BigDecimal totalFundIn;
     private BigDecimal totalFundOut;
     private BigDecimal balanceTransferIn;
@@ -27,8 +29,10 @@ public class CustomerSummaryReportModel {
 
     public CustomerSummaryReportModel(CustomerSummaryReport customerSummaryReport) {
         this.customerId = customerSummaryReport.getCustomerId();
+        this.transactionId = customerSummaryReport.getTransactionId();
+        this.createdBy = customerSummaryReport.getCreatedBy();
         this.customerName = customerSummaryReport.getCustomerName();
-        this.summaryDate = customerSummaryReport.getSummaryDate();
+        this.transactionDateTime = customerSummaryReport.getTransactionDateTime();
         this.totalFundIn = customerSummaryReport.getTotalFundIn();
         this.totalFundOut = customerSummaryReport.getTotalFundOut();
         this.balanceTransferIn = customerSummaryReport.getBalanceTransferIn();

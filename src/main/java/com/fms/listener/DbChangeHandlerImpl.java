@@ -2,10 +2,13 @@
 package com.fms.listener;
 
 import com.fms.entities.ActivityLog;
+import com.fms.entities.User;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.repositories.ActivityLogRepository;
 import com.fms.repositories.UserRepository;
 import com.fms.security.SecurityUser;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,8 @@ public class DbChangeHandlerImpl implements DbChangeHandler {
     protected final ActivityLogRepository activityLogRepository;
     protected final Environment environment;
     private final UserRepository userRepository;
+    @PersistenceContext
+    EntityManager entityManager;
 
 
     @Override
@@ -35,8 +40,8 @@ public class DbChangeHandlerImpl implements DbChangeHandler {
         activityLog.setAction(generateActionMessage(entity,action));
         activityLog.setDateTime(OffsetDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
         SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        activityLog.setUser(userRepository.findById(user.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+        activityLog.setUserId(user.getUserId());
+        activityLog.setUserName(user.getUsername());
         activityLogRepository.save(activityLog);
     }
 

@@ -13,7 +13,7 @@ public interface ExceptionListService {
 
     ExceptionListModel getExceptionList(Long exceptionListId);
 
-    Page<ExceptionListModel> getAllExceptionLists(String search, LocalDate dateFrom, LocalDate dateTo , Pageable pageable);
+    Page<ExceptionListModel> getAllExceptionLists(String search,String status,String createdBy, LocalDate dateFrom, LocalDate dateTo , Pageable pageable);
 
     ExceptionListModel createOrUpdate(ExceptionListModel exceptionListModel, Long exceptionListId, SecurityUser securityUser);
 }

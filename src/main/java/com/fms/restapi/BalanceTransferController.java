@@ -1,7 +1,7 @@
 package com.fms.restapi;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fms.models.BalanceTransferModel;
+import com.fms.models.BalanceTransferRequestModel;
 import com.fms.security.SecurityUser;
 import com.fms.service.BalanceTransferService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -26,12 +25,10 @@ public class BalanceTransferController {
     private final BalanceTransferService balanceTransferService;
     
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<BalanceTransferModel>> fetchAll(
-            @RequestParam(required = false) String search, @RequestParam(required = false) BigDecimal amount, @RequestParam(required = false)@DateTimeFormat(pattern = "dd-MM-yyyy") Date dateFrom, @RequestParam(required = false)@DateTimeFormat(pattern = "dd-MM-yyyy") Date dateTo,
-            @RequestParam(required = false)@DateTimeFormat(pattern = "hh:mm:ss") LocalTime timeFrom, @RequestParam(required = false)@DateTimeFormat(pattern = "hh:mm:ss") LocalTime timeTo,
+    public ResponseEntity<Page<BalanceTransferModel>> fetchAll(@ModelAttribute BalanceTransferRequestModel balanceTransferRequestModel,
             Pageable pageable) {
 
-        return ResponseEntity.ok(balanceTransferService.getAllBalanceTransfers(search,amount,dateFrom,dateTo,timeFrom,timeTo, pageable));
+        return ResponseEntity.ok(balanceTransferService.getAllBalanceTransfers(balanceTransferRequestModel, pageable));
     }
 
     @GetMapping(value = "/{balanceTransferId}", produces = MediaType.APPLICATION_JSON_VALUE)

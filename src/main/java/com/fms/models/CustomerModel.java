@@ -21,7 +21,9 @@ public class CustomerModel extends BaseModel{
     private Double fundOutCommissionPct;
 
     private Customer.CustomerStatus status;
-    private Long middleManId;
+    private Long revenueAccountId;
+
+    private String revenueAccountName;
     private String remarks;
 
     public CustomerModel(Customer customer){
@@ -34,7 +36,8 @@ public class CustomerModel extends BaseModel{
         this.fundOutFeePct = customer.getFundOutFeePct();
         this.fundInCommissionPct = customer.getFundInCommissionPct();
         this.fundOutCommissionPct = customer.getFundOutCommissionPct();
-        this.middleManId = customer.getUser() != null ? customer.getUser().getUserId() : null;
+        this.revenueAccountId = customer.getRevenueAccount() != null ? customer.getRevenueAccount().getRevenueAccountId() : null;
+        this.revenueAccountName = customer.getRevenueAccount()!= null ? customer.getRevenueAccount().getName(): null;
         this.remarks = customer.getRemarks();
     }
 

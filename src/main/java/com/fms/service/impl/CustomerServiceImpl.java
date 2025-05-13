@@ -8,10 +8,12 @@ import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.CustomerMapper;
 import com.fms.models.CustomerModel;
 import com.fms.repositories.CustomerRepository;
+import com.fms.repositories.RevenueAccountRepository;
 import com.fms.repositories.UserRepository;
 import com.fms.security.SecurityUser;
 import com.fms.service.CustomerService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final UserRepository userRepository;
+
+    private final RevenueAccountRepository revenueAccountRepository;
     @Override
     public CustomerModel getCustomer(Long customerId) {
         return new CustomerModel(customerRepository.findById(customerId)
@@ -39,7 +43,12 @@ public class CustomerServiceImpl implements CustomerService {
     public Page<CustomerModel> getAllCustomers(String customerName, Customer.CustomerStatus status, LocalDate startDate, LocalDate endDate, String search, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
-            filter.and(QCustomer.customer.customerName.containsIgnoreCase(search));
+            BooleanExpression searchCondition =
+                    QCustomer.customer.customerName.containsIgnoreCase(search);
+            filter.and(searchCondition);
+        }
+        if(null != status){
+            filter.and(QCustomer.customer.status.eq(status));
         }
         if(startDate != null){
             filter.and(QCustomer.customer.createdAt.goe(startDate.atStartOfDay().atOffset(ZoneOffset.UTC)));
@@ -74,8 +83,8 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setCreatedBy(loginUser);
         }
         customerMapper.toEntity(customerModel, customer);
-        if(null != customerModel.getMiddleManId()){
-            customer.setUser(userRepository.findById(customerModel.getMiddleManId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+        if(null != customerModel.getRevenueAccountId()){
+            customer.setRevenueAccount(revenueAccountRepository.findById(customerModel.getRevenueAccountId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
         }
         return customer;
     }

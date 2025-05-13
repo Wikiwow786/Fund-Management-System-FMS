@@ -35,7 +35,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
                                                      LocalTime timeFrom, LocalTime timeTo, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
         if (StringUtils.isNotBlank(user)) {
-            filter.and(QActivityLog.activityLog.user.name.containsIgnoreCase(user));
+            filter.and(QActivityLog.activityLog.userName.containsIgnoreCase(user));
         }
 
         if (dateFrom != null) {

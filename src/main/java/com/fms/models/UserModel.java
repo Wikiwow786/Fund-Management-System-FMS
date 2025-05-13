@@ -11,18 +11,22 @@ import org.springframework.util.ObjectUtils;
 public class UserModel extends BaseModel{
     private Long userId;
     private String name;
-    private String email;
     private String password;
+    private String currentPassword;
+    private String language;
     private Long roleId;
+    private String roleName;
     private User.UserStatus status;
 
     public UserModel(User user){
         super(user);
         this.userId = user.getUserId();
         this.name = user.getName();
-        this.email = user.getEmail();
+        this.language = user.getLanguage();
         this.roleId = !ObjectUtils.isEmpty(user.getRole()) ?
                 user.getRole().getRoleId() : null;
+        this.roleName = !ObjectUtils.isEmpty(user.getRole()) ?
+                user.getRole().getRoleName() : null;
         this.status = user.getStatus();
 
     }

@@ -17,6 +17,7 @@ public class ManualEntryModel extends BaseModel{
 
     private Long manualEntryId;
     private Long bankId;
+    private String bankName;
     private Long transactionId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date entryDate;
@@ -27,17 +28,21 @@ public class ManualEntryModel extends BaseModel{
     private ManualEntry.ManualEntryStatus status;
     private String remark;
 
+    private String createdByUser;
+
     public ManualEntryModel(ManualEntry manualEntry) {
         super(manualEntry);
         this.manualEntryId = manualEntry.getManualEntryId();
         this.bankId = manualEntry.getBank() != null ? manualEntry.getBank().getBankId() : null;
-        this.transactionId = manualEntry.getTransaction() != null ? manualEntry.getManualEntryId() : null;
+        this.transactionId = manualEntry.getTransaction() != null ? manualEntry.getTransaction().getTransactionId() : null;
         this.entryDate = manualEntry.getEntryDate();
         this.entryTime = manualEntry.getEntryTime();
         this.amount = manualEntry.getAmount();
         this.entryType = manualEntry.getEntryType();
         this.status = manualEntry.getStatus();
         this.remark = manualEntry.getRemark();
+        this.createdByUser = manualEntry.getCreatedBy().getName();
+        this.bankName = manualEntry.getBank() != null ? manualEntry.getBank().getBankName() : null;
     }
 
 }

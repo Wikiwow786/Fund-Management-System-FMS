@@ -1,8 +1,6 @@
 package com.fms.service.impl;
 
-import com.fms.entities.ManualEntry;
-import com.fms.entities.Transaction;
-import com.fms.entities.User;
+import com.fms.entities.*;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.ManualEntryMapper;
 import com.fms.models.ManualEntryModel;
@@ -16,12 +14,16 @@ import com.fms.service.ManualEntryService;
 import com.fms.service.TransactionService;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Service
@@ -42,8 +44,33 @@ public class ManualEntryServiceImpl implements ManualEntryService {
     }
 
     @Override
-    public Page<ManualEntryModel> getAllManualEntries(String search, Pageable pageable) {
+    public Page<ManualEntryModel> getAllManualEntries(String search, String entryType,String createdBy, Date dateFrom, Date dateTo, LocalTime timeFrom, LocalTime timeTo, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
+        if(StringUtils.isNotBlank(search)){
+            filter.and(QManualEntry.manualEntry.bank.bankName.containsIgnoreCase(search));
+        }
+        if(StringUtils.isNotBlank(createdBy)){
+            filter.and(QManualEntry.manualEntry.createdBy.name.containsIgnoreCase(createdBy));
+        }
+
+        if(entryType != null){
+            filter.and(QManualEntry.manualEntry.entryType.stringValue().containsIgnoreCase(entryType));
+        }
+        if(!ObjectUtils.isEmpty(dateFrom)){
+            filter.and(QManualEntry.manualEntry.entryDate.goe(dateFrom));
+        }
+        if(!ObjectUtils.isEmpty(dateTo)){
+            filter.and(QManualEntry.manualEntry.entryDate.loe(dateTo));
+
+        }
+        if (!ObjectUtils.isEmpty(timeFrom)) {
+           filter.and(QManualEntry.manualEntry.entryTime.after(Time.valueOf(timeFrom)));
+        }
+        if(!ObjectUtils.isEmpty(timeTo)){
+           filter.and(QManualEntry.manualEntry.entryTime.before(Time.valueOf(timeTo)));
+
+        }
+
         return manualEntryRepository.findAll(filter, pageable).map(ManualEntryModel::new);
     }
 
@@ -61,6 +88,9 @@ public class ManualEntryServiceImpl implements ManualEntryService {
         if (null != manualEntryId) {
             manualEntry = manualEntryRepository.findById(manualEntryId)
                     .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            if(manualEntryModel.getStatus().equals(ManualEntry.ManualEntryStatus.VOIDED)){
+                processVoidedManualEntry(manualEntry,manualEntryModel,securityUser);
+            }
             manualEntry.setUpdatedBy(user);
         }
         else {
@@ -71,16 +101,18 @@ public class ManualEntryServiceImpl implements ManualEntryService {
         if(null != manualEntryModel.getBankId()){
             manualEntry.setBank(bankRepository.findById(manualEntryModel.getBankId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
         }
-       TransactionModel transactionModel = createTransactionForManualEntry(manualEntryModel,manualEntryId,securityUser);
-        if(null != transactionModel.getTransactionId()){
-            manualEntry.setTransaction(transactionRepository.findById(transactionModel.getTransactionId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+        if(manualEntryModel.getEntryType() != null) {
+            TransactionModel transactionModel = createTransactionForManualEntry(manualEntryModel, manualEntryId, securityUser);
+            if(null != transactionModel.getTransactionId()){
+                manualEntry.setTransaction(transactionRepository.findById(transactionModel.getTransactionId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase())));
+            }
         }
         return manualEntry;
     }
 
     private TransactionModel createTransactionForManualEntry(ManualEntryModel manualEntryModel,Long manualEntryId,SecurityUser securityUser){
         TransactionModel transactionModel = buildTransactionModelForManualEntry(manualEntryModel,manualEntryId);
-        return transactionService.createOrUpdate(transactionModel,null,securityUser);
+        return transactionService.createOrUpdate(transactionModel,null,false,securityUser);
     }
 
     private TransactionModel buildTransactionModelForManualEntry(ManualEntryModel manualEntryModel,Long manualEntryId) {
@@ -99,13 +131,28 @@ public class ManualEntryServiceImpl implements ManualEntryService {
             transactionModel.setTransactionTime(manualEntryModel.getEntryTime());
             transactionModel.setBankId(manualEntryModel.getBankId());
         }
-        if(manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.BANK_INTEREST)){
-            transactionModel.setTransactionType(Transaction.TransactionType.FUND_IN);
-        }
-        if(manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.EXPENSE)){
+        if (transactionModel.getAmount().compareTo(BigDecimal.ZERO) < 0) {
             transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
+        } else {
+            if (manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.bank_interest)) {
+                transactionModel.setTransactionType(Transaction.TransactionType.FUND_IN);
+            }
+            if (manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.expense) ||
+                    manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.others)) {
+                transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
+            }
         }
+        transactionModel.setAmount(transactionModel.getAmount().abs());
         transactionModel.setStatus(Transaction.TransactionStatus.COMPLETED);
         return transactionModel;
     }
+
+
+    private void processVoidedManualEntry(ManualEntry manualEntry, ManualEntryModel manualEntryModel, SecurityUser securityUser){
+        TransactionModel transactionModel = new TransactionModel();
+        transactionModel.setStatus(Transaction.TransactionStatus.VOIDED);
+        transactionService.createOrUpdate(transactionModel,manualEntry.getTransaction().getTransactionId(), false,securityUser);
+
+    }
+
 }

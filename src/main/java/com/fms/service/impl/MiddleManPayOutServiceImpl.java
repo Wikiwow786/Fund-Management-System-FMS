@@ -1,9 +1,6 @@
 package com.fms.service.impl;
 
-import com.fms.entities.MiddleManPayOut;
-import com.fms.entities.RevenueAccount;
-import com.fms.entities.Transaction;
-import com.fms.entities.User;
+import com.fms.entities.*;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.MiddleManPayOutMapper;
 import com.fms.models.MiddleManPayOutModel;
@@ -15,12 +12,19 @@ import com.fms.repositories.UserRepository;
 import com.fms.security.SecurityUser;
 import com.fms.service.MiddleManPayOutService;
 import com.fms.service.TransactionService;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 @RequiredArgsConstructor
@@ -32,6 +36,22 @@ public class MiddleManPayOutServiceImpl implements MiddleManPayOutService {
     private final BankRepository bankRepository;
     private final MiddleManPayOutMapper middleManPayOutMapper;
     private final TransactionService transactionService;
+
+    @Override
+    public Page<MiddleManPayOutModel> getAllPayOuts(String revenueAccount, String status, LocalDate date, Pageable pageable) {
+        BooleanBuilder filter = new BooleanBuilder();
+        if (StringUtils.isNotBlank(revenueAccount)) {
+            filter.and(QMiddleManPayOut.middleManPayOut.revenueAccount.name.containsIgnoreCase(revenueAccount));
+        }
+        if (date != null) {
+            filter.and(QMiddleManPayOut.middleManPayOut.createdAt.goe(date.atStartOfDay().atOffset(ZoneOffset.UTC)));
+        }
+        if (StringUtils.isNotBlank(revenueAccount)) {
+            filter.and(QMiddleManPayOut.middleManPayOut.revenueAccount.name.containsIgnoreCase(revenueAccount));
+        }
+
+        return middleManPayOutRepository.findAll(filter,pageable).map(MiddleManPayOutModel::new);
+    }
 
     @Override
     public void handleMiddleManPayOut(MiddleManPayOutModel middleManPayOutModel, SecurityUser securityUser) {
@@ -61,7 +81,7 @@ public class MiddleManPayOutServiceImpl implements MiddleManPayOutService {
 
     private void createTransactionForMiddleManPayOut(MiddleManPayOutModel middleManPayOutModel, SecurityUser securityUser) {
         TransactionModel transactionModel = buildTransactionModelForMiddleManPayOut(middleManPayOutModel);
-        transactionService.createOrUpdate(transactionModel, null, securityUser);
+        transactionService.createOrUpdate(transactionModel, null,false, securityUser);
     }
 
     private TransactionModel buildTransactionModelForMiddleManPayOut(MiddleManPayOutModel middleManPayOutModel) {

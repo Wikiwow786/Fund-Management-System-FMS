@@ -27,6 +27,7 @@ public class RevenueAccount {
     private BigDecimal balance;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private RevenueAccountStatus status;
 
     @Column(name="start_date")

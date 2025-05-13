@@ -27,6 +27,11 @@ public class TransactionModel extends BaseModel{
     private String remark;
     private String externalId;
 
+    private String bankName;
+    private String customerName;
+    private String createdByUser;
+
+
 
     public TransactionModel(Transaction transaction) {
         super(transaction);
@@ -40,6 +45,9 @@ public class TransactionModel extends BaseModel{
         this.status = transaction.getStatus();
         this.remark = transaction.getRemark();
         this.externalId = transaction.getExternalId();
+        this.createdByUser = transaction.getCreatedBy().getName();
+        this.bankName = transaction.getBank() != null ? transaction.getBank().getBankName() : null;
+        this.customerName = transaction.getCustomer() != null ? transaction.getCustomer().getCustomerName() : null;
 
     }
 

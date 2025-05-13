@@ -55,7 +55,7 @@ public class UserAccountService implements UserDetailsService {
                 true, true, true,
                 rolePermissionRepository.findAllByRole(user.getRole()).stream()
                         .map(permission -> new SimpleGrantedAuthority(permission.getPermission().getPermissionCode()))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()),user.getLanguage());
 
     }
 

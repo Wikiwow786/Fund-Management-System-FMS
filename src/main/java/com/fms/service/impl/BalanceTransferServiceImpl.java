@@ -4,6 +4,7 @@ import com.fms.entities.*;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.BalanceTransferMapper;
 import com.fms.models.BalanceTransferModel;
+import com.fms.models.BalanceTransferRequestModel;
 import com.fms.models.TransactionModel;
 import com.fms.repositories.BalanceTransferRepository;
 import com.fms.repositories.BankRepository;
@@ -21,9 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.math.BigDecimal;
 import java.sql.Time;
-import java.time.LocalTime;
 import java.util.Date;
 
 @Service
@@ -45,23 +44,55 @@ public class BalanceTransferServiceImpl implements BalanceTransferService {
     }
 
     @Override
-    public Page<BalanceTransferModel> getAllBalanceTransfers(String search, BigDecimal amount, Date dateFrom, Date dateTo, LocalTime timeFrom, LocalTime timeTo, Pageable pageable) {
+    public Page<BalanceTransferModel> getAllBalanceTransfers(BalanceTransferRequestModel balanceTransferRequestModel, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
-        if(StringUtils.isNotBlank(search)){
-            filter.and(QBalanceTransfer.balanceTransfer.sourceBank.bankName.equalsIgnoreCase(search))
-                    .or(QBalanceTransfer.balanceTransfer.targetBank.bankName.equalsIgnoreCase(search))
-                    .or(QBalanceTransfer.balanceTransfer.createdBy.name.equalsIgnoreCase(search));
+        if(StringUtils.isNotBlank(balanceTransferRequestModel.getSearch())){
+            filter.and(QBalanceTransfer.balanceTransfer.createdBy.name.equalsIgnoreCase(balanceTransferRequestModel.getSearch()));
         }
-        if(amount != null){
-            filter.and(QBalanceTransfer.balanceTransfer.amount.eq(amount));
+        if(StringUtils.isNotBlank(balanceTransferRequestModel.getBankName())){
+            filter.and(QBalanceTransfer.balanceTransfer.sourceBank.bankName.equalsIgnoreCase(balanceTransferRequestModel.getBankName()));
         }
-        if(!ObjectUtils.isEmpty(dateFrom) && !ObjectUtils.isEmpty(dateTo)){
-            filter.and(QBalanceTransfer.balanceTransfer.transferDate.goe(dateFrom))
-                    .and(QBalanceTransfer.balanceTransfer.transferDate.loe(dateTo));
+        if(StringUtils.isNotBlank(balanceTransferRequestModel.getTargetBank())){
+            filter.and(QBalanceTransfer.balanceTransfer.targetBank.bankName.equalsIgnoreCase(balanceTransferRequestModel.getTargetBank()));
         }
-        if(!ObjectUtils.isEmpty(timeFrom) && !ObjectUtils.isEmpty(timeTo)){
-            filter.and(QBalanceTransfer.balanceTransfer.transferTime.after(Time.valueOf(timeFrom)))
-                    .and(QBalanceTransfer.balanceTransfer.transferTime.before(Time.valueOf(timeTo)));
+        if(balanceTransferRequestModel.getAmount() != null){
+            filter.and(QBalanceTransfer.balanceTransfer.amount.eq(balanceTransferRequestModel.getAmount()));
+        }
+        if(!ObjectUtils.isEmpty(balanceTransferRequestModel.getDateFrom()) && !ObjectUtils.isEmpty(balanceTransferRequestModel.getDateTo())){
+            filter.and(QBalanceTransfer.balanceTransfer.transferDate.goe(balanceTransferRequestModel.getDateFrom()))
+                    .and(QBalanceTransfer.balanceTransfer.transferDate.loe(balanceTransferRequestModel.getDateTo()));
+        }
+        if(!ObjectUtils.isEmpty(balanceTransferRequestModel.getTimeFrom()) && !ObjectUtils.isEmpty(balanceTransferRequestModel.getTimeTo())){
+            filter.and(QBalanceTransfer.balanceTransfer.transferTime.after(Time.valueOf(balanceTransferRequestModel.getTimeFrom())))
+                    .and(QBalanceTransfer.balanceTransfer.transferTime.before(Time.valueOf(balanceTransferRequestModel.getTimeTo())));
+        }
+
+        if(null != balanceTransferRequestModel.getCustomerId()){
+            filter.and(QBalanceTransfer.balanceTransfer.sourceCustomer.customerId.eq(balanceTransferRequestModel.getCustomerId()));
+        }
+
+        if(StringUtils.isNotBlank(balanceTransferRequestModel.getCustomerName())){
+            filter.and(QBalanceTransfer.balanceTransfer.sourceCustomer.customerName.equalsIgnoreCase(balanceTransferRequestModel.getCustomerName()));
+
+        }
+
+        if(StringUtils.isNotBlank(balanceTransferRequestModel.getTargetCustomer())){
+            filter.and(QBalanceTransfer.balanceTransfer.targetCustomer.customerName.equalsIgnoreCase(balanceTransferRequestModel.getTargetCustomer()));
+
+        }
+
+        if(null != balanceTransferRequestModel.getTargetCustomerId()){
+            filter.and(QBalanceTransfer.balanceTransfer.targetCustomer.customerId.eq(balanceTransferRequestModel.getTargetCustomerId()))
+                    .or(QBalanceTransfer.balanceTransfer.sourceCustomer.customerId.eq(balanceTransferRequestModel.getTargetCustomerId()));
+        }
+
+        if(null != balanceTransferRequestModel.getBankId()){
+            filter.and(QBalanceTransfer.balanceTransfer.sourceBank.bankId.eq(balanceTransferRequestModel.getBankId()));
+        }
+
+        if(null != balanceTransferRequestModel.getTargetBankId()){
+            filter.and(QBalanceTransfer.balanceTransfer.targetBank.bankId.eq(balanceTransferRequestModel.getTargetBankId()))
+                    .or(QBalanceTransfer.balanceTransfer.sourceBank.bankId.eq(balanceTransferRequestModel.getTargetBankId()));
         }
 
         return balanceTransferRepository.findAll(filter, pageable).map(BalanceTransferModel::new);
@@ -115,7 +146,7 @@ public class BalanceTransferServiceImpl implements BalanceTransferService {
 
     private void createTransactionForBalanceTransfer(Long bankId,Long customerId,BalanceTransfer balanceTransfer, Transaction.TransactionType transactionType, SecurityUser securityUser) {
         TransactionModel transactionModel = buildTransactionModelForBalanceTransfer(bankId,customerId,balanceTransfer,transactionType);
-        transactionService.createOrUpdate(transactionModel, null, securityUser);
+        transactionService.createOrUpdate(transactionModel, null,false, securityUser);
     }
 
     private TransactionModel buildTransactionModelForBalanceTransfer(Long bankId,Long customerId,BalanceTransfer balanceTransfer,Transaction.TransactionType transactionType) {

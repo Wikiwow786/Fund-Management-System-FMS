@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,16 +17,33 @@ import java.time.LocalDateTime;
 public class CommissionSummaryReport {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long Id;
+    @Column(name = "transaction_id")
+    private Long transactionId;
 
-    @Column(name = "summary_datetime")
-    private LocalDateTime summaryDatetime;
+    @Column(name = "transaction_datetime")
+    private LocalDateTime transactionDatetime;
+
+    @Column(name = "summary_date")
+    private LocalDate summaryDate;
 
     @Column(name = "revenue_account")
     private String revenueAccount;
 
+    @Column(name = "fund_in")
+    private BigDecimal fundIn;
+
+    @Column(name = "fund_out")
+    private BigDecimal fundOut;
+
+    @Column(name = "claimed")
+    private BigDecimal claimed;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
+
     @Column(name = "commission_amount")
     private BigDecimal commissionAmount;
+
+    @Column(name = "created_by")
+    private String createdBy;
 }

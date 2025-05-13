@@ -6,5 +6,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 public interface UserRepository extends JpaRepository<User,Long>, QuerydslPredicateExecutor<User> {
     User findByNameIgnoreCase(String name);
-    User findUserByEmailIgnoreCase(String email);
+   // User findUserByEmailIgnoreCase(String email);
 }

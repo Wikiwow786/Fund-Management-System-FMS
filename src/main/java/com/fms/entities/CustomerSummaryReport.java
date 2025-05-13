@@ -20,11 +20,17 @@ public class CustomerSummaryReport {
     @Column(name = "customer_id")
     private Long customerId;
 
+    @Column(name = "transaction_id")
+    private Long transactionId;
+
+    @Column(name = "created_by")
+    private String createdBy;
+
     @Column(name = "customer_name")
     private String customerName;
 
-    @Column(name = "summary_date")
-    private LocalDateTime summaryDate;
+    @Column(name = "transaction_date_time")
+    private LocalDateTime transactionDateTime;
 
     @Column(name = "total_fund_in")
     private BigDecimal totalFundIn;

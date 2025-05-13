@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequestMapping(value = "/banks")
 @RestController
@@ -38,9 +41,14 @@ public class BankController {
         BigDecimal totalBankBalance = bankModels.stream()
                 .map(BankModel::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        Optional<OffsetDateTime> lastUpdatedTime = bankModels.stream()
+                .map(BankModel::getUpdatedAt)
+                .filter(Objects::nonNull) // Avoid null values
+                .max(OffsetDateTime::compareTo);
         TotalBankBalanceModel totalBankBalanceModel = new TotalBankBalanceModel();
         totalBankBalanceModel.setBanks(bankModels);
         totalBankBalanceModel.setTotalBalance(totalBankBalance);
+        totalBankBalanceModel.setLastUpdatedAt(lastUpdatedTime);
         return ResponseEntity.ok(totalBankBalanceModel);
     }
 

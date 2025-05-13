@@ -60,12 +60,18 @@ public class ExceptionListServiceImpl implements ExceptionListService {
     }
 
     @Override
-    public Page<ExceptionListModel> getAllExceptionLists(String search, LocalDate dateFrom, LocalDate dateTo, Pageable pageable) {
+    public Page<ExceptionListModel> getAllExceptionLists(String search,String status,String createdBy, LocalDate dateFrom, LocalDate dateTo, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
         if(StringUtils.isNotBlank(search)){
-            filter.and(QExceptionList.exceptionList.bank.bankName.equalsIgnoreCase(search))
-                    .or(QExceptionList.exceptionList.status.eq(ExceptionList.ExceptionStatus.valueOf(search)))
-                    .or(QExceptionList.exceptionList.createdBy.name.equalsIgnoreCase(search));
+            filter.and(QExceptionList.exceptionList.bank.bankName.equalsIgnoreCase(search));
+
+        }
+        if(StringUtils.isNotBlank(status)){
+            filter.and(QExceptionList.exceptionList.status.stringValue().equalsIgnoreCase(status));
+        }
+
+        if(StringUtils.isNotBlank(createdBy)){
+            filter.and(QExceptionList.exceptionList.createdBy.name.equalsIgnoreCase(createdBy));
 
         }
 

@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(schema ="fms", name="user")
@@ -24,8 +27,8 @@ public class User extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "language")
+    private String language;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -34,6 +37,13 @@ public class User extends BaseEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @Lob
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(name = "profile_picture", columnDefinition = "BYTEA")
+    private byte[] profilePicture;
+
+
 
     public enum UserStatus{
         ACTIVE,

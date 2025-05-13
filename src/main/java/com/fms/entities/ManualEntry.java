@@ -48,7 +48,7 @@ public class ManualEntry extends BaseEntity{
     private String remark;
 
     public enum ManualEntryType {
-        BANK_INTEREST, EXPENSE, OTHERS
+        bank_interest,expense,others
     }
 
     public enum ManualEntryStatus {
