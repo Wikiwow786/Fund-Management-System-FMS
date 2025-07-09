@@ -1,0 +1,22 @@
+# Application info
+spring.application.name=fund-management-system
+server.port=8086
+server.servlet.contextPath=/fms
+spring.main.allow-bean-definition-overriding=true
+
+# Database config (replace with your own)
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://<your-db-host>:26257/<your-db-name>
+spring.datasource.username=<your-db-username>
+spring.datasource.password=<your-db-password>
+
+# Hibernate settings
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+
+# Logging
+logging.level.org.springframework.web=DEBUG
+logging.level.org.springframework.security=TRACE
+
+# JWT
+jwt.expiration=86400000
