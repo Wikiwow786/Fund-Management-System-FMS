@@ -49,7 +49,7 @@ public class RoleServiceImpl implements RoleService {
         BooleanBuilder filter = new BooleanBuilder();
 
         if (StringUtils.isNotBlank(search)) {
-            filter.and(QRole.role.roleName.equalsIgnoreCase(search));
+            filter.and(QRole.role.roleName.containsIgnoreCase(search));
         }
         return roleRepository.findAll(filter, pageable).map(RoleModel::new);
     }

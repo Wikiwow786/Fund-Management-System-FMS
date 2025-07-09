@@ -6,6 +6,7 @@ import com.fms.models.ActivityLogModel;
 import com.fms.repositories.ActivityLogRepository;
 import com.fms.service.ActivityLogService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
     public Page<ActivityLogModel> getAllActivityLogs(String user, LocalDate dateFrom, LocalDate dateTo,
                                                      LocalTime timeFrom, LocalTime timeTo, Pageable pageable) {
         BooleanBuilder filter = new BooleanBuilder();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         if (StringUtils.isNotBlank(user)) {
             filter.and(QActivityLog.activityLog.userName.containsIgnoreCase(user));
         }
@@ -47,20 +50,19 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         }
 
         if (timeFrom != null) {
-            OffsetDateTime timeFromOffset = OffsetDateTime.now().withHour(timeFrom.getHour())
-                    .withMinute(timeFrom.getMinute())
-                    .withSecond(timeFrom.getSecond())
-                    .withNano(0)
-                    .withOffsetSameInstant(ZoneOffset.UTC);
-            filter.and(QActivityLog.activityLog.dateTime.goe(timeFromOffset));
+            String timeFromStr = timeFrom.format(formatter);
+            filter.and(
+                    Expressions.stringTemplate("to_char({0}, 'HH24:MI:SS')", QActivityLog.activityLog.dateTime)
+                            .goe(timeFromStr)
+            );
         }
+
         if (timeTo != null) {
-            OffsetDateTime timeToOffset = OffsetDateTime.now().withHour(timeTo.getHour())
-                    .withMinute(timeTo.getMinute())
-                    .withSecond(timeTo.getSecond())
-                    .withNano(0)
-                    .withOffsetSameInstant(ZoneOffset.UTC);
-            filter.and(QActivityLog.activityLog.dateTime.loe(timeToOffset));
+            String timeToStr = timeTo.format(formatter);
+            filter.and(
+                    Expressions.stringTemplate("to_char({0}, 'HH24:MI:SS')", QActivityLog.activityLog.dateTime)
+                            .loe(timeToStr)
+            );
         }
         return activityLogRepository.findAll(filter,pageable).map(ActivityLogModel::new);
     }

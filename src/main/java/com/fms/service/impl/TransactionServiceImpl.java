@@ -1,6 +1,7 @@
 package com.fms.service.impl;
 
 import com.fms.entities.*;
+import com.fms.exception.FmsException;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.TransactionMapper;
 import com.fms.models.TransactionModel;
@@ -104,14 +105,24 @@ public class TransactionServiceImpl implements TransactionService {
         if (transactionModel.getBankId() != null) {
             Bank bank = bankRepository.findById(transactionModel.getBankId())
                     .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
-            transaction.setBank(bank);
-            handleBankBalance(transactionModel,bank);
+            if(bank.getStatus().equals(Bank.BankStatus.ACTIVE)) {
+                transaction.setBank(bank);
+                handleBankBalance(transactionModel, bank);
+            }
+            else{
+                throw new FmsException("Transaction is blocked due to inactive bank");
+            }
         }
         if (transactionModel.getCustomerId() != null) {
             Customer customer = customerRepository.findById(transactionModel.getCustomerId())
                     .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
-            transaction.setCustomer(customer);
-            handleCustomerBalance(transactionModel,customer,isStandard);
+            if(customer.getStatus().equals(Customer.CustomerStatus.ACTIVE)) {
+                transaction.setCustomer(customer);
+                handleCustomerBalance(transactionModel, customer, isStandard);
+            }
+            else{
+                throw new FmsException("Transaction is blocked due to inactive customer");
+            }
         }
 
         return transaction;

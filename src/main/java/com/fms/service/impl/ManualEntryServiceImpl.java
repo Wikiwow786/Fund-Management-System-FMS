@@ -115,37 +115,48 @@ public class ManualEntryServiceImpl implements ManualEntryService {
         return transactionService.createOrUpdate(transactionModel,null,false,securityUser);
     }
 
-    private TransactionModel buildTransactionModelForManualEntry(ManualEntryModel manualEntryModel,Long manualEntryId) {
+    private TransactionModel buildTransactionModelForManualEntry(ManualEntryModel manualEntryModel, Long manualEntryId) {
         TransactionModel transactionModel = new TransactionModel();
-        if(null != manualEntryId){
-           ManualEntry manualEntry = manualEntryRepository.findById(manualEntryId)
-                   .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+        BigDecimal amount;
+
+        if (manualEntryId != null) {
+            ManualEntry manualEntry = manualEntryRepository.findById(manualEntryId)
+                    .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            amount = manualEntry.getAmount();
             transactionModel.setTransactionDate(new Date());
             transactionModel.setTransactionTime(new Time(System.currentTimeMillis()));
             transactionModel.setBankId(manualEntry.getBank().getBankId());
-            transactionModel.setAmount(manualEntry.getAmount());
-        }
-        else {
-            transactionModel.setAmount(manualEntryModel.getAmount());
+        } else {
+            amount = manualEntryModel.getAmount();
             transactionModel.setTransactionDate(manualEntryModel.getEntryDate());
             transactionModel.setTransactionTime(manualEntryModel.getEntryTime());
             transactionModel.setBankId(manualEntryModel.getBankId());
         }
-        if (transactionModel.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+
+        ManualEntry.ManualEntryType entryType = manualEntryModel.getEntryType();
+
+        if (entryType == ManualEntry.ManualEntryType.bank_interest) {
             transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
-        } else {
-            if (manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.bank_interest)) {
+        } else if (entryType == ManualEntry.ManualEntryType.expense) {
+            transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
+        } else if (entryType == ManualEntry.ManualEntryType.others) {
+            if (amount.compareTo(BigDecimal.ZERO) > 0) {
                 transactionModel.setTransactionType(Transaction.TransactionType.FUND_IN);
-            }
-            if (manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.expense) ||
-                    manualEntryModel.getEntryType().equals(ManualEntry.ManualEntryType.others)) {
+            } else {
                 transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
             }
+        } else {
+            if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                transactionModel.setTransactionType(Transaction.TransactionType.FUND_OUT);
+            } else {
+                transactionModel.setTransactionType(Transaction.TransactionType.FUND_IN);
+            }
         }
-        transactionModel.setAmount(transactionModel.getAmount().abs());
+        transactionModel.setAmount(amount.abs());
         transactionModel.setStatus(Transaction.TransactionStatus.COMPLETED);
         return transactionModel;
     }
+
 
 
     private void processVoidedManualEntry(ManualEntry manualEntry, ManualEntryModel manualEntryModel, SecurityUser securityUser){

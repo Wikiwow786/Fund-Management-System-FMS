@@ -56,7 +56,7 @@ public class BalanceTransferServiceImpl implements BalanceTransferService {
             filter.and(QBalanceTransfer.balanceTransfer.targetBank.bankName.equalsIgnoreCase(balanceTransferRequestModel.getTargetBank()));
         }
         if(balanceTransferRequestModel.getAmount() != null){
-            filter.and(QBalanceTransfer.balanceTransfer.amount.eq(balanceTransferRequestModel.getAmount()));
+            filter.and(QBalanceTransfer.balanceTransfer.amount.goe(balanceTransferRequestModel.getAmount()));
         }
         if(!ObjectUtils.isEmpty(balanceTransferRequestModel.getDateFrom()) && !ObjectUtils.isEmpty(balanceTransferRequestModel.getDateTo())){
             filter.and(QBalanceTransfer.balanceTransfer.transferDate.goe(balanceTransferRequestModel.getDateFrom()))

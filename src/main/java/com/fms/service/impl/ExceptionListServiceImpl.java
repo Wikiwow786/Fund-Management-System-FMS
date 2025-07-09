@@ -41,17 +41,21 @@ public class ExceptionListServiceImpl implements ExceptionListService {
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
 
         BigDecimal systemBalance = bank.getBalance();
-        BigDecimal imbalanceAmount = systemBalance.subtract(exceptionListModel.getInputBalance()).abs();
+        BigDecimal inputBalance = exceptionListModel.getInputBalance();
+        BigDecimal imbalanceAmount = systemBalance.subtract(inputBalance);
 
-        if (imbalanceAmount.compareTo(BigDecimal.ZERO) > 0) {
+        if (imbalanceAmount.compareTo(BigDecimal.ZERO) != 0) {
             exceptionListModel.setCause("Imbalance detected during daily check-out");
             exceptionListModel.setStatus(ExceptionList.ExceptionStatus.UNEXPLAINED);
             exceptionListModel.setImbalanceAmount(imbalanceAmount);
             createOrUpdate(exceptionListModel, null, securityUser);
+            bank.setBalance(bank.getBalance().subtract(imbalanceAmount));
+            bankRepository.save(bank);
+
             throw new FmsException("Imbalance detected. Exception created.");
         }
-
     }
+
 
     @Override
     public ExceptionListModel getExceptionList(Long exceptionListId) {
@@ -101,6 +105,16 @@ public class ExceptionListServiceImpl implements ExceptionListService {
         if (null != exceptionListId) {
             exceptionList = exceptionListRepository.findById(exceptionListId)
                     .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+            ExceptionList.ExceptionStatus oldStatus = exceptionList.getStatus();
+            ExceptionList.ExceptionStatus newStatus = exceptionListModel.getStatus();
+
+            if (oldStatus == ExceptionList.ExceptionStatus.UNEXPLAINED && newStatus != ExceptionList.ExceptionStatus.UNEXPLAINED) {
+                Bank bank = bankRepository.findById(exceptionList.getBank().getBankId())
+                        .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND.getReasonPhrase()));
+
+                bank.setBalance(bank.getBalance().add(exceptionList.getImbalanceAmount()));
+                bankRepository.save(bank);
+            }
         }
         else {
             exceptionList = new ExceptionList();

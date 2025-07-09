@@ -1,5 +1,6 @@
 package com.fms.service;
 
+import com.fms.models.DashboardResponseModel;
 import com.fms.models.RolePermissionModel;
 import com.fms.models.UserModel;
 import com.fms.security.SecurityUser;
@@ -24,4 +25,6 @@ public interface UserService {
     List<RolePermissionModel> getCurrentUserPermissions(Long userId);
 
     void setProfilePicture(String userName,SecurityUser securityUser, MultipartFile file);
+
+    DashboardResponseModel getDashboardData(List<Long> bankIds, List<Long> customerIds);
 }

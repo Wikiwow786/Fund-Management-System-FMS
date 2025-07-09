@@ -78,11 +78,11 @@ public class UnclaimedAmountServiceImpl implements UnclaimedAmountService {
         }
 
         if (StringUtils.isNotBlank(createdBy)) {
-            filter.and(QUnclaimedAmount.unclaimedAmount.createdBy.name.equalsIgnoreCase(createdBy));
+            filter.and(QUnclaimedAmount.unclaimedAmount.createdBy.name.containsIgnoreCase(createdBy));
         }
 
         if (StringUtils.isNotBlank(updatedBy)) {
-            filter.and(QUnclaimedAmount.unclaimedAmount.updatedBy.name.equalsIgnoreCase(updatedBy));
+            filter.and(QUnclaimedAmount.unclaimedAmount.updatedBy.name.containsIgnoreCase(updatedBy));
         }
 
 

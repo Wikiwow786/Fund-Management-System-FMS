@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -18,6 +19,12 @@ public class BalanceTransferRequestModel {
     private String bankName;
     private String targetBank;
     private BigDecimal amount;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate inputDate;
+
+    @DateTimeFormat(pattern = "hh:mm:ss")
+    private LocalTime inputTime;
+
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date dateFrom;

@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,19 @@ public class UserAccountService implements UserDetailsService {
           return processLogin(user);
 
     }
+
+    public UserDetails loadUserById(Long userId) {
+        User user = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return new SecurityUser(user.getUserId(), user.getName(), user.getPassword(),
+                user.getStatus().equals(User.UserStatus.ACTIVE),
+                true, true, true,
+                rolePermissionRepository.findAllByRole(user.getRole()).stream()
+                        .map(permission -> new SimpleGrantedAuthority(permission.getPermission().getPermissionCode()))
+                        .collect(Collectors.toList()),user.getLanguage());
+    }
+
 
 
     public User validateEmailAddress(String userName){

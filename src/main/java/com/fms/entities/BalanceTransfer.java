@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -47,6 +49,13 @@ public class BalanceTransfer extends BaseEntity{
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Column(name = "input_date")
+    private LocalDate inputDate;
+
+    @Column(name = "input_time")
+    private LocalTime inputTime;
+
 
 }
 

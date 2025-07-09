@@ -21,6 +21,8 @@ public class BankModel extends BaseModel{
     private BigDecimal balance;
     private Double balanceLimit;
     private Bank.BankStatus status;
+
+    private BigDecimal transactionAmount;
     private String remarks;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date startDate;

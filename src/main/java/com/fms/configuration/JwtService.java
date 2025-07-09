@@ -1,4 +1,5 @@
 package com.fms.configuration;
+import com.fms.security.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -26,9 +27,10 @@ public class JwtService {
     public Date getExpiredAt() {
         return new Date(System.currentTimeMillis() + expiredAt);
     }
-    public String extractUserName(String token) {
-        return extractClaim(token,Claims::getSubject);
+    public Long extractUserId(String token) {
+        return Long.parseLong(extractClaim(token, Claims::getSubject));
     }
+
 
     public <T> T extractClaim(String token, Function<Claims,T> claimsResolver){
         final Claims claims = extractAllClaims(token);
@@ -40,7 +42,8 @@ public class JwtService {
                                 UserDetails userDetails){
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
+              //  .subject(userDetails.getUsername())
+                .subject(String.valueOf(((SecurityUser) userDetails).getUserId()))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(getExpiredAt())
                 .signWith(getSignInKey())
@@ -52,9 +55,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) || !isTokenExpired(token));
-
+        Long tokenUserId = extractUserId(token);
+        return tokenUserId.equals(((SecurityUser) userDetails).getUserId()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

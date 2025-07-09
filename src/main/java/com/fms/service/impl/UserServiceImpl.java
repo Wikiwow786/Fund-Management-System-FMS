@@ -1,16 +1,11 @@
 package com.fms.service.impl;
 
-import com.fms.entities.QUser;
-import com.fms.entities.Role;
-import com.fms.entities.User;
+import com.fms.entities.*;
 import com.fms.exception.FmsException;
 import com.fms.exception.ResourceNotFoundException;
 import com.fms.mapper.UserMapper;
-import com.fms.models.RolePermissionModel;
-import com.fms.models.UserModel;
-import com.fms.repositories.RolePermissionRepository;
-import com.fms.repositories.RoleRepository;
-import com.fms.repositories.UserRepository;
+import com.fms.models.*;
+import com.fms.repositories.*;
 import com.fms.security.SecurityUser;
 import com.fms.service.UserService;
 import com.querydsl.core.BooleanBuilder;
@@ -25,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +31,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final BankRepository bankRepository;
+    private final CustomerRepository customerRepository;
+
+    private final TransactionRepository transactionRepository;
 
     private final RolePermissionRepository rolePermissionRepository;
 
@@ -49,13 +49,13 @@ public class UserServiceImpl implements UserService {
         BooleanBuilder filter = new BooleanBuilder();
 
         if(StringUtils.isNotBlank(search)){
-           filter.and(QUser.user.name.equalsIgnoreCase(search));
+           filter.and(QUser.user.name.containsIgnoreCase(search));
         }
         if(StringUtils.isNotBlank(status)){
             filter.and(QUser.user.status.stringValue().equalsIgnoreCase(status));
         }
         if(StringUtils.isNotBlank(roleName)){
-            filter.and(QUser.user.role.roleName.equalsIgnoreCase(roleName));
+            filter.and(QUser.user.role.roleName.containsIgnoreCase(roleName));
         }
         return userRepository.findAll(filter,pageable).map(UserModel::new);
     }
@@ -98,14 +98,42 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isNotBlank(userName)){
             user.setName(userName);
         }
-
-        try {
-            user.setProfilePicture(file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading profile picture", e);
+        if (file != null && !file.isEmpty()) {
+            try {
+                user.setProfilePicture(file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading profile picture", e);
+            }
         }
         userRepository.save(user);
     }
+    @Override
+    public DashboardResponseModel getDashboardData(List<Long> bankIds, List<Long> customerIds) {
+        List<Bank> banks = bankRepository.findAllById(bankIds);
+        List<Customer> customers = customerRepository.findAllById(customerIds);
+
+        List<BankDashBoardModel> bankModels = banks.stream().map(bank -> {
+            BankDashBoardModel model = new BankDashBoardModel();
+            model.setBankId(bank.getBankId());
+            model.setBankName(bank.getBankName());
+            model.setBalance(bank.getBalance());
+            model.setBalanceLimit(bank.getBalanceLimit());
+            model.setTransactionAmount(transactionRepository.sumAmountByBankId(bank.getBankId()));
+            return model;
+        }).toList();
+
+        List<CustomerDashboardModel> customerModels = customers.stream().map(customer -> {
+            CustomerDashboardModel model = new CustomerDashboardModel();
+            model.setCustomerId(customer.getCustomerId());
+            model.setCustomerName(customer.getCustomerName());
+            model.setBalance(customer.getBalance());
+            model.setTransactionAmount(transactionRepository.sumAmountByCustomerId(customer.getCustomerId()));
+            return model;
+        }).toList();
+
+        return new DashboardResponseModel(bankModels, customerModels);
+    }
+
 
 
     public User assemble(UserModel userModel, Long userId, SecurityUser securityUser){

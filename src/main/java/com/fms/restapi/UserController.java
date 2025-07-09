@@ -2,6 +2,7 @@ package com.fms.restapi;
 
 
 import com.fms.entities.User;
+import com.fms.models.DashboardResponseModel;
 import com.fms.models.RolePermissionModel;
 import com.fms.models.UserModel;
 import com.fms.repositories.UserRepository;
@@ -47,6 +48,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardResponseModel> getDashboardData(
+            @RequestParam(required = false) List<Long> bankIds,
+            @RequestParam(required = false) List<Long> customerIds
+    ) {
+        return ResponseEntity.ok(userService.getDashboardData(bankIds, customerIds));
+    }
+
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserModel> save(@RequestBody UserModel userModel, @AuthenticationPrincipal SecurityUser securityUser) {
         return ResponseEntity.ok(userService.createOrUpdate(userModel, null, securityUser));
@@ -72,7 +82,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> setProfilePicture(@RequestParam(required = false)String userName, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal SecurityUser securityUser) {
+    public ResponseEntity<Void> setProfilePicture(@RequestParam(required = false)String userName, @RequestParam(value = "file",required = false) MultipartFile file, @AuthenticationPrincipal SecurityUser securityUser) {
         try {
             userService.setProfilePicture(userName,securityUser, file);
             return ResponseEntity.ok().build();

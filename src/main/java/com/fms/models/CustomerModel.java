@@ -15,6 +15,8 @@ public class CustomerModel extends BaseModel{
     private Long customerId;
     private String customerName;
     private BigDecimal balance;
+
+    private BigDecimal transactionAmount;
     private Double fundInFeePct;
     private Double fundOutFeePct;
     private Double fundInCommissionPct;
